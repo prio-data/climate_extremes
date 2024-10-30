@@ -18,7 +18,7 @@ VIEWS Research
 
 The **Violence & Impacts Early-Warning System (VIEWS)** is a state-of-the-art machine learning-based system that forecasts inter- and intrastate conflicts globally, focusing on scenarios involving government-affiliated actors and projecting up to three years into the future. Supported by an integrated consortium, VIEWS spearheads cutting-edge research on conflict forecasting and the analysis of its social impacts while actively engaging with key policymakers and stakeholders through dedicated outreach and knowledge transfer initiatives.
 
-## Project Description: VIEWS FOA_Index
+## Project Description: 
 
 **Anticipating Future Developments to Mitigate Human Suffering**
 
@@ -70,9 +70,7 @@ As the project advances, efforts will focus on refining analytical methods, vali
     |
     |-- reports/
     |   |-- plots/
-    |   |-- timelapse/
-    |   |-- papers/
-    |   |-- presentations/
+    |
     |
     |-- src/
         |- dataloaders/    % Scripts for downloading viewser data
@@ -129,7 +127,4 @@ This project is licensed under the MIT License. See the [LICENSE.md](./LICENSE.m
 
 ----
 ### Main files
-- **df_monthly_country_return_periods.csv**: [Download CSV](https://storage.googleapis.com/views-fao_bucket_01/data/generated/df_monthly_country_return_periods.csv)
-- **df_monthly_country_return_periods.pkl**: [Download PKL](https://storage.googleapis.com/views-fao_bucket_01/data/generated/df_monthly_country_return_periods.pkl)
-- **df_yearly_country_return_periods.csv**: [Download CSV](https://storage.googleapis.com/views-fao_bucket_01/data/generated/df_yearly_country_return_periods.csv)
-- **df_yearly_country_return_periods.pkl**: [Download PKL](https://storage.googleapis.com/views-fao_bucket_01/data/generated/df_yearly_country_return_periods.pkl)
+- **Priogrid Shapefile**: [Download shp](https:// ....)
