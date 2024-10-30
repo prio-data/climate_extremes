@@ -1,0 +1,19 @@
+# Ignore node_modules
+node_modules/
+
+# Ignore logs
+logs/
+*.log
+
+# Ignore temporary files
+*.tmp
+*.bak
+
+*.csv
+*.zip
+*.nc
+*.tif
+
+# Ignore system files
+.DS_Store
+Thumbs.db
