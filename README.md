@@ -20,32 +20,21 @@ The **Violence & Impacts Early-Warning System (VIEWS)** is a state-of-the-art ma
 
 ## Project Description: 
 
-**Anticipating Future Developments to Mitigate Human Suffering**
+**Relevance of ETCCDI Copernicus Climate Data in Conflict Analysis**
+The ETCCDI (Expert Team on Climate Change Detection and Indices) Copernicus climate data provides a structured approach to quantifying 27 key climate extremes, offering a critical dataset for analyzing climate impacts over time. These indices, encompassing metrics like temperature extremes, precipitation variability, and duration of climate anomalies, are particularly relevant for assessing the environmental conditions that may contribute to conflict dynamics. ETCCDI data brings rigor and comparability to climate-related studies by standardizing climate impact metrics, which are essential in understanding how shifts in climate extremes compound vulnerabilities across different regions. For conflict analysis, having access to this high-quality, standardized data forms a baseline for integrating climate data with socioeconomic and conflict indicators in a scientifically robust way.
 
-In a world increasingly characterized by complex, interlinked crises, the ability to forecast and respond to emerging violent conflicts is critical. The **Violence & Impacts Early-Warning System (VIEWS)** is designed to provide reliable and actionable conflict forecasts. By doing so, VIEWS aims to empower organizations to mobilize resources and implement timely interventions that mitigate human suffering and protect human dignity.
+**Impact of a Standardized Measurement Platform**
+A platform that translates ETCCDI climate data to a standard unit of measure for conflict analysis has transformative potential. Such a platform would allow for the seamless integration of climate indices with other meaningful variables, including population density, agricultural yield, and existing conflict incidents, all within a unified resolution. This integration is key to isolating and mapping the compounded effects of climate and conflict on socioeconomic stability. By providing a standardized measurement framework, the platform enables researchers and policymakers to track, visualize, and compare the impact of climate extremes across diverse regions and contexts. This standardized approach is instrumental for building transparent, replicable methods, setting a benchmark for future climate-conflict research.
 
-**Leveraging Advanced Analytics for Conflict and Food Crisis Forecasting**
-
-Recent global crises, such as the COVID-19 pandemic and the war in Ukraine, have underscored the fragile balance of food security and the potential for conflict to exacerbate humanitarian emergencies. The VIEWS FOA_Index project addresses this challenge by focusing on the intersection of conflict forecasting and disaster risk financing, particularly in preventing food crises.
-
-**The Conflict and Food Crisis Nexus**
-
-The FAO's role in this project is to develop a robust analytical framework that monitors violent conflicts and anticipates their potential to trigger food crises. The goal is to create an index that identifies spikes in conflict, which can then be used as a trigger for parametric insurance mechanisms designed to prevent food crises from escalating into full-blown famines.
-
-**Strategic Importance**
-
-The VIEWS FOA_Index project contributes to the broader objective of developing a disaster risk financing structure. This structure is intended to provide rapid, preemptive financing in response to early signs of food crises, ensuring that resources are available when they are most needed, and before the situation deteriorates into famine.
-
-**Next Steps and Vision**
-
-As the project advances, efforts will focus on refining analytical methods, validating trigger mechanisms with stakeholders, and scaling the approach to additional countries. The ultimate goal is to develop a scalable, adaptable system that integrates conflict forecasting with humanitarian financing, thereby enhancing global preparedness and response to food crises.
+**Advancing Climate Security through Transparent Preprocessing**
+This research project adds value by contributing a preprocessing layer that aligns climate and conflict data for use in predictive modeling. Although preprocessing ETCCDI data for conflict applications may not be analytically complex, it is a crucial step in ensuring data compatibility, transparency, and reproducibility. By harmonizing climate indices with high-resolution socioeconomic variables, the VIEWS research team can push the state of the art in climate security modeling. This approach enables a nuanced understanding of how climate extremes can exacerbate existing vulnerabilities in regions susceptible to conflict, facilitating proactive, data-driven policy responses. By featuring transparent methods and maintaining consistent standards across datasets, this project strengthens the reliability and applicability of climate-conflict research.
 
 
 ## Repository Structure
 
 ```
 
-|-- FAO_index/
+|-- ETCCDI_index/
     |-- README.md
     |-- LICENCE.md
     |-- .gitignore
@@ -97,7 +86,7 @@ To get started with this project, ensure that you have the following:
 1. **Clone the Repository**
 
     ```bash
-    git clone https://github.com/your-repo-url/FAO_index.git
+    git clone https://github.com/prio-data/climate_extremes.git
     ```
 
 2. **Set Up the Environment**
