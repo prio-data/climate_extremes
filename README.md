@@ -29,6 +29,7 @@ A platform that translates ETCCDI climate data to a standard unit of measure for
 **Advancing Climate Security through Transparent Preprocessing**
 This research project adds value by contributing a preprocessing layer that aligns climate and conflict data for use in predictive modeling. Although preprocessing ETCCDI data for conflict applications may not be analytically complex, it is a crucial step in ensuring data compatibility, transparency, and reproducibility. By harmonizing climate indices with high-resolution socioeconomic variables, the VIEWS research team can push the state of the art in climate security modeling. This approach enables a nuanced understanding of how climate extremes can exacerbate existing vulnerabilities in regions susceptible to conflict, facilitating proactive, data-driven policy responses. By featuring transparent methods and maintaining consistent standards across datasets, this project strengthens the reliability and applicability of climate-conflict research.
 
+**Next Steps**
 
 ## Repository Structure
 
