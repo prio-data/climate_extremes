@@ -44,16 +44,16 @@ def generate_and_validate_request(variable, product_type, experiment, temporal_a
                                 ]  # variables that can only be yearly
             }
         },
-        "experiment": ["Historical", "ssp1_2_6", "SSP2_4_5", "SSP5_8_5"],
+        "experiment": ["historical", "ssp1_2_6", "SSP2_4_5", "SSP5_8_5"],
         "temporal_aggregation": {
             "monthly": {
-                "Historical": ["185001-201412"],
+                "historical": ["185001-201412"],
                 "ssp1_2_6": ["201501_210012"],
                 "SSP2_4_5": ["201501_210012"],
                 "SSP5_8_5": ["201501_210012"]
             },
             "yearly": {
-                "Historical": ["1850-2014"],
+                "historical": ["1850-2014"],
                 "ssp1_2_6": ["2015-2100"],
                 "SSP2_4_5": ["2015-2100"],
                 "SSP5_8_5": ["2015-2100"]
@@ -103,7 +103,7 @@ def generate_and_validate_request(variable, product_type, experiment, temporal_a
     
     # Check experiment is valid
     if request["experiment"][0] not in allowed_values["experiment"]:
-        raise ValueError("Invalid experiment. Must be one of 'Historical', 'ssp1_2_6', 'SSP2_4_5', or 'SSP5_8_5'.")
+        raise ValueError("Invalid experiment. Must be one of 'historical', 'ssp1_2_6', 'SSP2_4_5', or 'SSP5_8_5'.")
 
     # Check temporal_aggregation
     temporal_agg = request["temporal_aggregation"][0]
