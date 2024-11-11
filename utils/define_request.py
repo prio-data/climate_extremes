@@ -47,16 +47,16 @@ def generate_and_validate_request(variable, product_type, experiment, temporal_a
         "experiment": ["historical", "ssp1_2_6", "SSP2_4_5", "SSP5_8_5"],
         "temporal_aggregation": {
             "monthly": {
-                "historical": ["185001-201412"],
+                "historical": ["185001_201412"],
                 "ssp1_2_6": ["201501_210012"],
                 "SSP2_4_5": ["201501_210012"],
                 "SSP5_8_5": ["201501_210012"]
             },
             "yearly": {
-                "historical": ["1850-2014"],
-                "ssp1_2_6": ["2015-2100"],
-                "SSP2_4_5": ["2015-2100"],
-                "SSP5_8_5": ["2015-2100"]
+                "historical": ["1850_2014"],
+                "ssp1_2_6": ["2015_2100"],
+                "SSP2_4_5": ["2015_2100"],
+                "SSP5_8_5": ["2015_2100"]
             }
         },
         "data_format": "netcdf"
@@ -70,7 +70,7 @@ def generate_and_validate_request(variable, product_type, experiment, temporal_a
         "ensemble_member": ["r1i1p1f3"],
         "experiment": [experiment],
         "temporal_aggregation": [temporal_aggregation],
-        "period": ["201501_210012"] if temporal_aggregation == "monthly" else ["1850-2014"],  # Update period based on temporal_aggregation
+        "period": ["201501_210012"] if temporal_aggregation == "monthly" else ["1850_2014"],  # Update period based on temporal_aggregation
         "version": ["2_0"],
         "data_format": "netcdf"
     }
