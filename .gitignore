@@ -15,5 +15,6 @@ logs/
 *.tif
 
 # Ignore system files
+*.pyc
 .DS_Store
 Thumbs.db
