@@ -39,7 +39,7 @@ def find_etccdi_timeindex(specified_year, specified_month, ds):
         year_check, month_check, _ = time_strings[specified_month_index].split('-')
         print(f"Index of {specified_month} data for year {specified_year}: {specified_month_index}")
         print(f"Validation: Found data for Year: {year_check}, Month: {month_check} at index {specified_month_index}.")
-        return(specified_month_index)
+        return(specified_month_index, month_check, year_check)
     else:
         # If the specified month data is not found, check if any month data exists
         if first_month_index is not None:
@@ -47,7 +47,7 @@ def find_etccdi_timeindex(specified_year, specified_month, ds):
             # Validate the first month found
             year_check, month_check, _ = time_strings[first_month_index].split('-')
             print(f"Validation: Found data for Year: {year_check}, Month: {month_check} at index {first_month_index}.")
-            return(first_month_index)
+            return(first_month_index, month_check, year_check)
 
         else:
             print(f"No data found for the year {specified_year}.")
