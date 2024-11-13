@@ -5,12 +5,22 @@ import numpy as np
 from rasterstats import point_query
 import os
 import matplotlib.pyplot as plt
+from pathlib import Path
 
-def generate_etccdi_temporal_tables__centroid(param_time_index_list, param_netcdf, param_climate_index, param_shapefile_path, output_folder):
 
+
+def generate_etccdi_temporal_tables__centroid(param_time_index_list, param_netcdf, param_climate_index, param_shapefile_name = 'pgm_viewser_extent.shp'):
+
+
+    project_root = Path(__file__).resolve().parent.parent
+
+    extent_path = project_root / 'data' / 'processed' / 'extent_shapefile'
+    extent_filename = extent_path / param_shapefile_name
+
+    generated_index_table_folder = project_root / 'data' / 'generated' / 'index_table_output'
 
     # Load the finer grid (zones) as a GeoDataFrame
-    gdf = gpd.read_file(param_shapefile_path)
+    gdf = gpd.read_file(extent_filename)
     gdf = gdf[['gid', 'geometry', 'xcoord', 'ycoord']]
 
     # Initialize an empty list to hold the stats DataFrames
@@ -88,7 +98,9 @@ def generate_etccdi_temporal_tables__centroid(param_time_index_list, param_netcd
     # Define output CSV file path
     first_time_index = param_time_index_list[0]
     last_time_index = param_time_index_list[-1]
-    output_file_path = os.path.join(output_folder, f"{param_climate_index}_{first_time_index}_{last_time_index}__centroid_process.csv")
+
+    output_file_path = generated_index_table_folder / f"{param_climate_index}_{first_time_index}_{last_time_index}__centroid_process.csv"
+    #os.path.join(generated_index_table_folder, f"{param_climate_index}_{first_time_index}_{last_time_index}__centroid_process.csv")
 
     # Save the final DataFrame to CSV
     final_gdf.to_csv(output_file_path, index=False)

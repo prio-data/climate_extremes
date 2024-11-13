@@ -1,8 +1,15 @@
 import zipfile
+from pathlib import Path
 
 def unzip_etccdi_package(param_zip_file_name):
 
-    with zipfile.ZipFile(param_zip_file_name, 'r') as zip_ref:
+    project_root = Path(__file__).resolve().parent.parent
+
+    raw_data = project_root / 'data' / 'raw_external' / 'cds_zip'
+    zip_file_path = raw_data / param_zip_file_name
+
+
+    with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
         # Extract all contents to the current working directory
         zip_ref.extractall()  
         
