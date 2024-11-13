@@ -1,15 +1,18 @@
 import rioxarray
-import rasterio
-from rasterio.enums import Resampling
+import numpy as np
 import matplotlib.pyplot as plt
-import os
+from rasterio.enums import Resampling
+import xarray as xr
 import geopandas as gpd
 from rasterstats import zonal_stats
 import pandas as pd
-import numpy as np
+import os
 
-def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_climate_index, param_shapefile_path):
+def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_climate_index, param_shapefile_path, output_folder):
     all_stats = []
+
+    # Ensure the output folder exists
+    os.makedirs(output_folder, exist_ok=True)
 
     # Retrieve the first and last time indices for file naming
     first_time_index = param_time_index_list[0]
@@ -31,98 +34,96 @@ def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_c
         else:
             raise TypeError(f"Unsupported data type '{data_type}' for variable '{param_climate_index}'. Expected 'timedelta64[ns]' or 'float32'.")
         
-        # Plotting and other processing steps
-        plt.figure(figsize=(10, 6))
-        raster_data.plot(cmap='viridis')
-        plt.title(f'{param_climate_index} at Time Index {i}')
-        plt.xlabel('Longitude')
-        plt.ylabel('Latitude')
-        plt.show()
-
         # Convert spatial dimensions
         raster_data = raster_data.rename({'lon': 'x', 'lat': 'y'})
         raster_data = raster_data.rio.set_spatial_dims(x_dim='x', y_dim='y')
 
         # Get the date and time information
         date_time = str(param_netcdf['time'].isel(time=i).values.item())
-        year = date_time.split('-')[0]
-        month = date_time.split('-')[1]
-        print("Year:", date_time)
+        year, month = date_time.split('-')[:2]
+        print("Year:", year, "Month:", month)
 
         # Set CRS if not already defined
         if not raster_data.rio.crs:
+            print("CRS is not set. Setting CRS to EPSG:4326")
             raster_data = raster_data.rio.write_crs("EPSG:4326")
 
-        # Convert to float for consistent data type in raster operations
-        raster_data = raster_data.astype('float32')
+        # Save the original raster to the designated folder
+        original_raster_path = os.path.join(output_folder, f"original_{param_climate_index}_{year}_{month}.tif")
+        raster_data.rio.to_raster(original_raster_path)
+        print(f"Original raster saved at: {original_raster_path}")
 
-        # Check for NaN values and mask if needed
-        raster_data = raster_data.where(~np.isnan(raster_data), other=0)  # Set NaNs to 0 for plotting
-        
-        # Save the raster to GeoTIFF
-        raster_file_path = 'working_etccdi_file.tif'
-        raster_data.rio.to_raster(raster_file_path)
-        print(f"GeoTIFF saved at: {raster_file_path}")
+        # Create a separate raster with null values set to -9999
+        raster_with_nulls_set = raster_data.fillna(-9999)
 
-        # Resample Raster
-        raster_data = rioxarray.open_rasterio(raster_file_path)
+        # Save the modified raster (with nulls as -9999) to the designated folder
+        null_set_raster_path = os.path.join(output_folder, f"null_set_{param_climate_index}_{year}_{month}.tif")
+        raster_with_nulls_set.rio.to_raster(null_set_raster_path)
+        print(f"Raster with nulls set to -9999 saved at: {null_set_raster_path}")
 
-        # Calculate current and new resolutions
-        current_resolution_x = abs(raster_data.x[1] - raster_data.x[0])
-        current_resolution_y = abs(raster_data.y[1] - raster_data.y[0])
-        new_resolution_x = current_resolution_x / 10
-        new_resolution_y = current_resolution_y / 10
+        # Resample directly with bilinear interpolation
+        def resample_with_bilinear(raster_data, factor=3):
+            # Resample with the target shape
+            upsampled_raster = raster_data.rio.reproject(
+                raster_data.rio.crs,
+                shape=(
+                    int(raster_data.sizes['y'] * factor),
+                    int(raster_data.sizes['x'] * factor)
+                ),
+                resampling=Resampling.bilinear
+            )
+            return upsampled_raster
 
-        # Resample without introducing NoData values
-        resampled_raster = raster_data.rio.reproject(
-            raster_data.rio.crs,
-            shape=(
-                int(raster_data.shape[1] * 10),  
-                int(raster_data.shape[2] * 10)  
-            ),
-            resampling=Resampling.bilinear
-        )
-        
-        # Save resampled raster
-        resampled_raster_path = 'working_etccdi_file_resampled.tif'
-        resampled_raster.rio.to_raster(resampled_raster_path)
-        print(f"Resampled GeoTIFF saved at: {resampled_raster_path}")
+        # Apply the resampling method
+        upsampled_raster = resample_with_bilinear(raster_data, factor=20)
 
-        # Calculate zonal statistics
+        # Plot the resampled raster
+        plt.figure(figsize=(10, 6))
+        upsampled_raster.plot(cmap='viridis')
+        plt.title(f'Upsampled Raster for {param_climate_index} at Time Index {i}')
+        plt.xlabel('Longitude')
+        plt.ylabel('Latitude')
+        plt.show()
+
+        # Save the resampled raster to the designated folder
+        upsampled_raster_path = os.path.join(output_folder, f"upsampled_{param_climate_index}_{year}_{month}.tif")
+        upsampled_raster.rio.to_raster(upsampled_raster_path)
+        print(f"Upsampled raster saved at: {upsampled_raster_path}")
+
+        # Load the shapefile for zonal statistics
         gdf = gpd.read_file(param_shapefile_path)
         gdf = gdf[['gid', 'geometry', 'xcoord', 'ycoord']]
-        stats = zonal_stats(gdf, resampled_raster_path, stats='mean', geojson_out=True)
+
+        # Calculate zonal statistics on the upsampled raster
+        stats = zonal_stats(gdf, upsampled_raster_path, stats='mean', geojson_out=True)
         stats_gdf = gpd.GeoDataFrame.from_features(stats)
 
-        # Add Year and Month fields to stats_gdf
+        # Add year and month fields
         stats_gdf['year'] = year
         stats_gdf['month'] = month
         stats_gdf.rename(columns={'mean': param_climate_index}, inplace=True)
 
-        # Plot the zonal statistics
-        fig, ax = plt.subplots(figsize=(10, 6))
-        stats_gdf.plot(column=param_climate_index, ax=ax, legend=True, cmap='viridis', edgecolor='none')
-        ax.set_title(f'{param_climate_index} Statistics by Region - {year}-{month}')
-        ax.set_xlabel('Longitude')
-        ax.set_ylabel('Latitude')
-        plt.show()
+        # Ensure stats_gdf has valid geometry and data
+        stats_gdf = stats_gdf[stats_gdf.geometry.notnull() & stats_gdf[param_climate_index].notnull()]
 
-        # Append the stats_gdf to the all_stats list
+        # Plot the zonal statistics if there is data
+        if not stats_gdf.empty:
+            fig, ax = plt.subplots(figsize=(10, 6))
+            stats_gdf.plot(column=param_climate_index, ax=ax, legend=True, cmap='viridis', edgecolor='none')
+            ax.set_title(f'{param_climate_index} Statistics by Region - {year}-{month}')
+            ax.set_xlabel('Longitude')
+            ax.set_ylabel('Latitude')
+            plt.show()
+        else:
+            print(f"No valid zonal statistics data to plot for {param_climate_index} at time index {i}")
+
+        # Append to list
         all_stats.append(stats_gdf)
 
-    # Concatenate all DataFrames into one
+    # Concatenate all DataFrames
     final_gdf = pd.concat(all_stats, ignore_index=True)
 
-    # Construct the output filename
-    first_date_time = str(param_netcdf['time'].isel(time=first_time_index).values.item())
-    last_date_time = str(param_netcdf['time'].isel(time=last_time_index).values.item())
-    first_year, first_month = first_date_time.split('-')[0], first_date_time.split('-')[1]
-    last_year, last_month = last_date_time.split('-')[0], last_date_time.split('-')[1]
-    
-    # Save the final DataFrame to a CSV file
-    folder = 'etccdi_out_files'
-    os.makedirs(folder, exist_ok=True)
-    output_file_path = os.path.join(folder, f"{param_climate_index}_{first_year}_{first_month}__{last_year}_{last_month}.csv")
-    
+    # Save final DataFrame to CSV in the designated folder
+    output_file_path = os.path.join(output_folder, f"{param_climate_index}_{first_time_index}_{last_time_index}.csv")
     final_gdf.to_csv(output_file_path, index=False)
     print(f"Final DataFrame saved to: {output_file_path}")
