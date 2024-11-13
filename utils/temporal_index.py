@@ -52,3 +52,34 @@ def find_etccdi_timeindex(specified_year, specified_month, ds):
         else:
             print(f"No data found for the year {specified_year}.")
             return(None)
+        
+
+def translate_index_to_daterange(etccdi, reference_df, start_year, start_month, end_year, end_month):
+    #-----------------------------------------------------------
+    # Establish Start and End index values:
+    start_index_val, loc_start_month, loc_start_year =  find_etccdi_timeindex(start_year, start_month, etccdi)
+    print()
+    end_index_val, loc_end_month, loc_end_year = find_etccdi_timeindex(end_year, end_month, etccdi)
+    print()
+    #-----------------------------------------------------------
+    print(f'The start index is: {start_index_val}, referencing Month: {loc_start_month} and Year: {loc_start_year}')
+    print()
+    print(f'The end index is: {end_index_val}, referencing Month: {loc_end_month} and Year: {loc_end_year}')
+    print()
+    #-----------------------------------------------------------
+    index_list = list(range(start_index_val, end_index_val + 1))
+    #-----------------------------------------------------------
+
+    #-----------------------------------------------------------
+    # Filter the PG reference file to the temporal parameters now established:
+    #-----------------------------------------------------------
+
+    # For annual:
+    # the etccdi dataframe will contain a month field but this is irrelevant because the temporal resolution is 1-year
+
+    # For monthly:
+    # why don't you filter for a monthly attribute?: Because all months will be included when subsetting by year.
+    reference_filtered_time = reference_df.loc[(reference_df['year'] >= loc_start_year) & (reference_df['year'] <= loc_end_year)]
+    #-----------------------------------------------------------
+    print(reference_filtered_time)
+    return(index_list, reference_filtered_time)
