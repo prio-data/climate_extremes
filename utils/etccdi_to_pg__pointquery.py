@@ -37,7 +37,7 @@ def generate_etccdi_temporal_tables__centroid(param_time_index_list, param_netcd
         raster_data = raster_data.rio.set_spatial_dims(x_dim='x', y_dim='y')
 
         # Extract date and time information for labeling or file naming
-        date_time = str(etccdi['time'].isel(time=i).values.item())
+        date_time = str(param_netcdf['time'].isel(time=i).values.item())
         year, month = date_time.split('-')[:2]
         print("Year:", year, "Month:", month)
 
