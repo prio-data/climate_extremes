@@ -8,8 +8,65 @@ from rasterstats import zonal_stats
 import pandas as pd
 import os
 
+import math  # Add this import at the top of your file
+import geopandas as gpd
+
+
+from pathlib import Path
+from matplotlib.backends.backend_pdf import PdfPages  # Import PdfPages for saving PDF layouts
+import tempfile
+
+def generate_layout_and_save(param_time_index_list, plot_figures, output_folder, param_climate_index):
+    columns = 4
+    rows = 3
+    plots_per_page = columns * rows
+    total_plots = len(plot_figures)
+    total_pages = math.ceil(total_plots / plots_per_page)
+
+    output_folder = Path(output_folder)
+    output_folder.mkdir(parents=True, exist_ok=True)
+    output_file = output_folder / f'{param_climate_index}_layout.pdf'
+
+    with PdfPages(output_file) as pdf:
+        for page in range(total_pages):
+            fig, axes = plt.subplots(rows, columns, figsize=(11.69, 8.27))  # A4 size in landscape
+            axes = axes.flatten()
+
+            for i in range(plots_per_page):
+                plot_index = page * plots_per_page + i
+                if plot_index < total_plots:
+                    fig_plot = plot_figures[plot_index]
+                    
+                    # Remove x and y labels, but keep the axes and legend
+                    for ax in fig_plot.get_axes():
+                        ax.set_xlabel('')  # Remove x-axis label
+                        ax.set_ylabel('')  # Remove y-axis label
+
+                    # Save each figure to a temporary file, then load it
+                    with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmpfile:
+                        fig_plot.savefig(tmpfile.name, bbox_inches='tight')  # Save plot with legend
+                        img = plt.imread(tmpfile.name)
+                        axes[i].imshow(img)  # Place the image into the subplot axis
+                        axes[i].axis('off')  # Turn off axis for a cleaner layout
+                else:
+                    axes[i].axis('off')  # Hide unused subplots
+
+            plt.tight_layout()
+            pdf.savefig(fig)
+            plt.close(fig)
+
+    print(f"All graphics saved to {output_file}")
+    return output_file
+
+
 def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_climate_index, param_shapefile_path, output_folder):
+    project_root = Path.cwd()  # Set this to your project root manually if needed
+
+    map_folder = project_root / 'docs' / 'Graphics' / 'Standard_review'
+
+
     all_stats = []
+    plot_figures = []  # Initialize list to store figures
 
     # Ensure the output folder exists
     os.makedirs(output_folder, exist_ok=True)
@@ -114,6 +171,8 @@ def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_c
             ax.set_xlabel('Longitude')
             ax.set_ylabel('Latitude')
             plt.show()
+            plot_figures.append(fig)  # Append figure to list
+
         else:
             print(f"No valid zonal statistics data to plot for {param_climate_index} at time index {i}")
 
@@ -127,3 +186,6 @@ def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_c
     output_file_path = os.path.join(output_folder, f"{param_climate_index}_{first_time_index}_{last_time_index}.csv")
     final_gdf.to_csv(output_file_path, index=False)
     print(f"Final DataFrame saved to: {output_file_path}")
+
+    generate_layout_and_save(param_time_index_list, plot_figures, map_folder, param_climate_index)
+

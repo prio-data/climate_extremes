@@ -1,3 +1,4 @@
+import math  # Add this import at the top of your file
 import rasterio
 import geopandas as gpd
 import pandas as pd
@@ -6,106 +7,128 @@ from rasterstats import point_query
 import os
 import matplotlib.pyplot as plt
 from pathlib import Path
+from matplotlib.backends.backend_pdf import PdfPages  # Import PdfPages for saving PDF layouts
+import tempfile
 
 
 
-def generate_etccdi_temporal_tables__centroid(param_time_index_list, param_netcdf, param_climate_index, param_shapefile_name = 'pgm_viewser_extent.shp'):
+def generate_layout_and_save(param_time_index_list, plot_figures, output_folder, param_climate_index):
+    columns = 4
+    rows = 3
+    plots_per_page = columns * rows
+    total_plots = len(plot_figures)
+    total_pages = math.ceil(total_plots / plots_per_page)
+
+    output_folder = Path(output_folder)
+    output_folder.mkdir(parents=True, exist_ok=True)
+    output_file = output_folder / f'{param_climate_index}_layout.pdf'
+
+    with PdfPages(output_file) as pdf:
+        for page in range(total_pages):
+            fig, axes = plt.subplots(rows, columns, figsize=(11.69, 8.27))  # A4 size in landscape
+            axes = axes.flatten()
+
+            for i in range(plots_per_page):
+                plot_index = page * plots_per_page + i
+                if plot_index < total_plots:
+                    fig_plot = plot_figures[plot_index]
+                    
+                    # Remove x and y labels, but keep the axes and legend
+                    for ax in fig_plot.get_axes():
+                        ax.set_xlabel('')  # Remove x-axis label
+                        ax.set_ylabel('')  # Remove y-axis label
+
+                    # Save each figure to a temporary file, then load it
+                    with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmpfile:
+                        fig_plot.savefig(tmpfile.name, bbox_inches='tight')  # Save plot with legend
+                        img = plt.imread(tmpfile.name)
+                        axes[i].imshow(img)  # Place the image into the subplot axis
+                        axes[i].axis('off')  # Turn off axis for a cleaner layout
+                else:
+                    axes[i].axis('off')  # Hide unused subplots
+
+            plt.tight_layout()
+            pdf.savefig(fig)
+            plt.close(fig)
+
+    print(f"All graphics saved to {output_file}")
+    return output_file
 
 
-    project_root = Path(__file__).resolve().parent.parent
-
+def generate_etccdi_temporal_tables__centroid(param_time_index_list, param_netcdf, param_climate_index, param_shapefile_name='pgm_viewser_extent.shp'):
+    project_root = Path.cwd()  # Set this to your project root manually if needed
     extent_path = project_root / 'data' / 'processed' / 'extent_shapefile'
     extent_filename = extent_path / param_shapefile_name
-
     generated_index_table_folder = project_root / 'data' / 'generated' / 'index_table_output'
+    
+    map_folder = project_root / 'docs' / 'Graphics' / 'Standard_review'
 
-    # Load the finer grid (zones) as a GeoDataFrame
     gdf = gpd.read_file(extent_filename)
     gdf = gdf[['gid', 'geometry', 'xcoord', 'ycoord']]
 
-    # Initialize an empty list to hold the stats DataFrames
     all_stats = []
+    plot_figures = []  # Initialize list to store figures
 
-    # Loop through each time index in the NetCDF file
     for i in param_time_index_list:
         print(f"Processing time index: {i}")
-
-        # Select data for the specified climate index and handle data types
+        
         data = param_netcdf[param_climate_index]
         data_type = data.dtype
 
         if data_type == 'timedelta64[ns]':
-            data_days = data / np.timedelta64(1, 'D')  # Convert to days if it's timedelta
+            data_days = data / np.timedelta64(1, 'D')
             raster_data = data_days.isel(time=i)
         elif data_type == 'float32':
             raster_data = data.isel(time=i)
         else:
             raise TypeError(f"Unsupported data type '{data_type}' for variable '{param_climate_index}'.")
 
-        # Convert spatial dimensions to be compatible with rasterio and zonal statistics
         raster_data = raster_data.rename({'lon': 'x', 'lat': 'y'})
         raster_data = raster_data.rio.set_spatial_dims(x_dim='x', y_dim='y')
-
-        # Extract date and time information for labeling or file naming
         date_time = str(param_netcdf['time'].isel(time=i).values.item())
         year, month = date_time.split('-')[:2]
         print("Year:", year, "Month:", month)
 
-        # Ensure CRS is set to EPSG:4326 if undefined
         if not raster_data.rio.crs:
             print("CRS is not set. Setting CRS to EPSG:4326")
             raster_data = raster_data.rio.write_crs("EPSG:4326")
 
-        # Save the raster for the current time slice to a temporary GeoTIFF for zonal stats
         temp_raster = f'temp_raster_{year}_{month}.tif'
         raster_data.rio.to_raster(temp_raster)
 
-        # Calculate centroids of each polygon in the shapefile for point-based sampling
         gdf['centroid'] = gdf.geometry.centroid
-
-        # Use `point_query` to get raster values at each centroid
         gdf[f'Point_query_result'] = point_query(
-            gdf['centroid'],  # Use centroids as the query points
-            temp_raster,  # Temporary raster file
-            interpolate='nearest'  # Nearest neighbor interpolation to match the coarse grid
+            gdf['centroid'],
+            temp_raster,
+            interpolate='nearest'
         )
-
-        # Remove the centroid column to avoid multiple geometry columns
         gdf = gdf.drop(columns=['centroid'])
-
-        # Create a copy of the current gdf with the new raster value column
         stats_gdf = gdf.copy()
-
-                # Add year and month fields
         stats_gdf['year'] = year
         stats_gdf['month'] = month
-        #stats_gdf.rename(columns={'mean': param_climate_index}, inplace=True)
-
-        # Append the current stats_gdf to the all_stats list
         all_stats.append(stats_gdf)
 
-        # Plotting the shapefile with the interpolated raster values (optional)
+        # Create and save the figure without displaying it
+
         fig, ax = plt.subplots(1, 1, figsize=(10, 8))
         stats_gdf.plot(column=f'Point_query_result', cmap='viridis', legend=True, ax=ax)
         ax.set_title(f"Raster Values for {year}-{month}")
         plt.xlabel("Longitude")
         plt.ylabel("Latitude")
-        plt.show()
+        plt.show() 
+        plot_figures.append(fig)  # Append figure to list
 
-    # Concatenate all DataFrames
     final_gdf = pd.concat(all_stats, ignore_index=True)
-
-    # Define output CSV file path
     first_time_index = param_time_index_list[0]
     last_time_index = param_time_index_list[-1]
-
-    output_file_path = generated_index_table_folder / f"{param_climate_index}_{first_time_index}_{last_time_index}__centroid_process.csv"
-    #os.path.join(generated_index_table_folder, f"{param_climate_index}_{first_time_index}_{last_time_index}__centroid_process.csv")
-
-    # Save the final DataFrame to CSV
+    file_name = f"{param_climate_index}_{first_time_index}_{last_time_index}__centroid_process.csv"
+    output_file_path = generated_index_table_folder / file_name
     final_gdf.to_csv(output_file_path, index=False)
     print(f"Final DataFrame saved to: {output_file_path}")
+    print(file_name)
 
-    # Clean up: Close the dataset
+    # Save layout of all figures
+    generate_layout_and_save(param_time_index_list, plot_figures, map_folder, param_climate_index)
+    
     param_netcdf.close()
-
+    return file_name

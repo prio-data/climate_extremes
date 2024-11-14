@@ -1,5 +1,6 @@
 import zipfile
 from pathlib import Path
+import os
 
 def unzip_etccdi_package(param_zip_file_name):
 
@@ -8,14 +9,14 @@ def unzip_etccdi_package(param_zip_file_name):
     raw_data = project_root / 'data' / 'raw_external' / 'cds_zip'
     zip_file_path = raw_data / param_zip_file_name
 
+        # Default to extracting in 'data/processed' if no path is provided
 
     with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
         # Extract all contents to the current working directory
-        zip_ref.extractall()  
+        zip_ref.extractall(path=raw_data)
         
         # Get the list of file names in the ZIP file
         netcdf_file = zip_ref.namelist()[0]  # This returns a list of file names in the ZIP
-
 
     # Split the filename on underscores
     parts = netcdf_file.split('_')
@@ -23,7 +24,7 @@ def unzip_etccdi_package(param_zip_file_name):
     # Keep only the first part
     etccdi_index = parts[0]
     # Optionally, delete the ZIP file after extraction
-    #os.remove(zip_file_name)
+    os.remove(zip_file_path)
 
     # Print the names of the extracted files
     print(etccdi_index)

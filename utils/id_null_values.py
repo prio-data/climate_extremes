@@ -1,13 +1,22 @@
 import pandas as pd
+from pathlib import Path
+
 
 #Parameters:
 # 1: validate_etccdi
 # 2: reference_filtered_time
 def report_null_etccdi_values(etccdi_pg_file, param_reference_filtered_time):
+
+    project_root = Path(__file__).resolve().parent.parent
+
+    generated_index_table_folder = project_root / 'data' / 'generated' / 'index_table_output'
+    find_file_path = generated_index_table_folder / etccdi_pg_file
+
+
     #------------------------------------------------------------------------------------
     #load the developed Climate index 
     #------------------------------------------------------------------------------------
-    validate_etccdi = pd.read_csv(etccdi_pg_file)
+    validate_etccdi = pd.read_csv(find_file_path)
     #------------------------------------------------------------------------------------
     validate_etccdi['date'] = validate_etccdi['year'].astype(str) + '-' + validate_etccdi['month'].astype(str).str.zfill(2)
     validate_etccdi['year'] = validate_etccdi['year'].astype(str)

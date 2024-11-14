@@ -1,11 +1,21 @@
 import numpy as np
 import xarray as xr
+from pathlib import Path
 
 
 # Load the NetCDF file
 #file_path = '/Users/gbenz/Downloads/tx10pETCCDI_mon_HadGEM3-GC31-LL_historical_r1i1p1f3_b1981-2010_v20190624_185001-201412_v2-0.nc'
 
 def transform_longitudinal_values(param_etccdi_index, param_netcdf_file):
+
+
+    project_root = Path(__file__).resolve().parent.parent
+
+    raw_data = project_root / 'data' / 'raw_external' / 'cds_zip'
+    zip_file_path = raw_data / param_netcdf_file
+
+    netcdf_data = project_root / 'data' / 'generated' / 'netcdf'
+
     # Check if the variable appears in the file path
     if param_etccdi_index not in param_netcdf_file:
         raise ValueError(f"STOP!! Before you break the climate '{param_etccdi_index}' does not appear in the file path '{param_netcdf_file}'.")
@@ -13,7 +23,7 @@ def transform_longitudinal_values(param_etccdi_index, param_netcdf_file):
         print(f"The variable '{param_etccdi_index}' was found in the file path and the world continues to spin.")
 
     # Open the dataset
-    ds = xr.open_dataset(f'/Users/gbenz/Documents/Climate Data/climate_extremes/{param_netcdf_file}')
+    ds = xr.open_dataset(zip_file_path)
 
     # Get latitude and longitude coordinates
     lat = ds['lat'].values
@@ -39,10 +49,10 @@ def transform_longitudinal_values(param_etccdi_index, param_netcdf_file):
     lon_min, lon_max = ds['lon'].min().values, ds['lon'].max().values
     print(f"Adjusted Longitude range: {lon_min} to {lon_max}")
 
+    netcdf_data_filename = netcdf_data / f'adjusted_{param_netcdf_file}.nc'
 
-    adjusted_netcdf_file = f'/Users/gbenz/Downloads/adjusted_{param_netcdf_file}.nc'
-    ds.to_netcdf(adjusted_netcdf_file)
+    ds.to_netcdf(netcdf_data_filename)
 
-    print(f"Adjusted dataset saved to: {adjusted_netcdf_file}")
+    print(f"Adjusted dataset saved to: {netcdf_data_filename}")
 
     return(ds)
