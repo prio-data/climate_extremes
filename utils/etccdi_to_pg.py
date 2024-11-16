@@ -25,7 +25,7 @@ def generate_layout_and_save(param_time_index_list, plot_figures, output_folder,
 
     output_folder = Path(output_folder)
     output_folder.mkdir(parents=True, exist_ok=True)
-    output_file = output_folder / f'{param_climate_index}_layout.pdf'
+    output_file = output_folder / f'{param_climate_index}_layout__resample.pdf'
 
     with PdfPages(output_file) as pdf:
         for page in range(total_pages):
@@ -64,6 +64,10 @@ def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_c
 
     map_folder = project_root / 'docs' / 'Graphics' / 'Standard_review'
 
+    out_originalraster_folder = project_root / 'native' 
+    out_upsampleraster_folder = project_root / 'method' / 'upsampled'
+
+    generated_index_table_folder = project_root / 'data' / 'generated' / 'index_table_output'
 
     all_stats = []
     plot_figures = []  # Initialize list to store figures
@@ -106,7 +110,7 @@ def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_c
             raster_data = raster_data.rio.write_crs("EPSG:4326")
 
         # Save the original raster to the designated folder
-        original_raster_path = os.path.join(output_folder, f"original_{param_climate_index}_{year}_{month}.tif")
+        original_raster_path = os.path.join(out_originalraster_folder, f"original_{param_climate_index}_{year}_{month}.tif")
         raster_data.rio.to_raster(original_raster_path)
         print(f"Original raster saved at: {original_raster_path}")
 
@@ -114,7 +118,7 @@ def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_c
         raster_with_nulls_set = raster_data.fillna(-9999)
 
         # Save the modified raster (with nulls as -9999) to the designated folder
-        null_set_raster_path = os.path.join(output_folder, f"null_set_{param_climate_index}_{year}_{month}.tif")
+        null_set_raster_path = os.path.join(out_originalraster_folder, f"null_set_{param_climate_index}_{year}_{month}.tif")
         raster_with_nulls_set.rio.to_raster(null_set_raster_path)
         print(f"Raster with nulls set to -9999 saved at: {null_set_raster_path}")
 
@@ -143,7 +147,7 @@ def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_c
         plt.show()
 
         # Save the resampled raster to the designated folder
-        upsampled_raster_path = os.path.join(output_folder, f"upsampled_{param_climate_index}_{year}_{month}.tif")
+        upsampled_raster_path = os.path.join(out_upsampleraster_folder, f"upsampled_{param_climate_index}_{year}_{month}.tif")
         upsampled_raster.rio.to_raster(upsampled_raster_path)
         print(f"Upsampled raster saved at: {upsampled_raster_path}")
 
@@ -183,7 +187,7 @@ def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_c
     final_gdf = pd.concat(all_stats, ignore_index=True)
 
     # Save final DataFrame to CSV in the designated folder
-    output_file_path = os.path.join(output_folder, f"{param_climate_index}_{first_time_index}_{last_time_index}.csv")
+    output_file_path = os.path.join(generated_index_table_folder, f"{param_climate_index}_{first_time_index}_{last_time_index}__resample.csv")
     final_gdf.to_csv(output_file_path, index=False)
     print(f"Final DataFrame saved to: {output_file_path}")
 
