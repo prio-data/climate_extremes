@@ -59,13 +59,17 @@ def generate_layout_and_save(param_time_index_list, plot_figures, output_folder,
     return output_file
 
 
-def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_climate_index, param_shapefile_path, output_folder):
+def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_climate_index, param_shapefile_name='pgm_viewser_extent.shp'):
     project_root = Path.cwd()  # Set this to your project root manually if needed
 
     map_folder = project_root / 'docs' / 'Graphics' / 'Standard_review'
 
-    out_originalraster_folder = project_root / 'native' 
-    out_upsampleraster_folder = project_root / 'method' / 'upsampled'
+    extent_path = project_root / 'data' / 'processed' / 'extent_shapefile'
+    extent_filename = extent_path / param_shapefile_name
+
+
+    out_originalraster_folder = project_root / 'data' / 'generated' / 'index_raster_output' /'native' 
+    out_upsampleraster_folder = project_root / 'data' / 'generated' / 'index_raster_output' / 'method' / 'upsampled'
 
     generated_index_table_folder = project_root / 'data' / 'generated' / 'index_table_output'
 
@@ -73,7 +77,7 @@ def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_c
     plot_figures = []  # Initialize list to store figures
 
     # Ensure the output folder exists
-    os.makedirs(output_folder, exist_ok=True)
+    #os.makedirs(output_folder, exist_ok=True)
 
     # Retrieve the first and last time indices for file naming
     first_time_index = param_time_index_list[0]
@@ -152,7 +156,7 @@ def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_c
         print(f"Upsampled raster saved at: {upsampled_raster_path}")
 
         # Load the shapefile for zonal statistics
-        gdf = gpd.read_file(param_shapefile_path)
+        gdf = gpd.read_file(extent_filename)
         gdf = gdf[['gid', 'geometry', 'xcoord', 'ycoord']]
 
         # Calculate zonal statistics on the upsampled raster
@@ -192,4 +196,6 @@ def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_c
     print(f"Final DataFrame saved to: {output_file_path}")
 
     generate_layout_and_save(param_time_index_list, plot_figures, map_folder, param_climate_index)
+
+    return output_file_path
 
