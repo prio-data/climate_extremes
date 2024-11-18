@@ -121,6 +121,9 @@ def generate_etccdi_temporal_tables__centroid(param_time_index_list, param_netcd
     final_gdf = pd.concat(all_stats, ignore_index=True)
     first_time_index = param_time_index_list[0]
     last_time_index = param_time_index_list[-1]
+
+    stats_gdf.rename(columns={'Point_query_result': param_climate_index}, inplace=True)
+
     file_name = f"{param_climate_index}_{first_time_index}_{last_time_index}__centroid_process.csv"
     output_file_path = generated_index_table_folder / file_name
     final_gdf.to_csv(output_file_path, index=False)
