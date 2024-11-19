@@ -109,6 +109,24 @@ For more detailed information, refer to the following documents located in the `
 - **Contributing Guide**: Instructions on how to contribute to the project.
 - **Code of Conduct**: Expected behavior guidelines for contributors.
 
+## Requirements
+
+Before using this repository, ensure the following tools and dependencies are installed:
+
+### Tools
+The following tools may need to be installed separately to ensure full functionality:
+- **CDS Tools**: Used for data processing and access through Copernicus. [Installation Guide](https://cds.climate.copernicus.eu/)
+- **[Tool/Library Name]**: Brief description of its purpose.
+
+### Python Dependencies
+The required Python packages can be installed using the provided `requirements.txt` file. To install them, run:
+```
+bash
+pip install -r requirements.txt
+```  
+
+
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE.md](./LICENSE.md) file for more details.
