@@ -105,6 +105,8 @@ To get started with this project, ensure that you have the following:
     python install_dependencies.py
     ```  
 4. **Consult ETCCDI Index Options**
+    Please reference the user guide provided by ECMWF:
+    https://confluence.ecmwf.int/display/CKB/Climate+extreme+indices+and+heat+stress+indicators+derived+from+CMIP6+global+climate+projections%3A+Product+User+Guide
 
 5. **Run Main.py**
 
@@ -138,7 +140,9 @@ bash
 pip install -r requirements.txt
 ```  
 
+## Maintenace Considerations
 
+- Ensure the **reference table** adjusts to changes in the spatial extent of PRIOgrid. That is, when VIEWS migrates to global coverage, a new reference file should be constructed. This is redundant to what the ingester accomplishes, the added value of keeping this reference file updated is validating tables for analytic use that are not intended to be ingested.
 
 ## License
 
