@@ -94,14 +94,23 @@ To get started with this project, ensure that you have the following:
 
     Ensure you have the necessary Python environment configured, specifically the latest `viewser` environment. If you don't have this set up, please contact us at [info@viewsforecasting.org](mailto:info@viewsforecasting.org) to inquire about getting access.
 
+    ```bash
+    conda activate viewser
+    ```  
+
 3. **Python Dependencies**
     The required Python packages can be installed using the provided `install_dependencies.py` file. To install them, run:
+    
     ```bash
     python install_dependencies.py
     ```  
-4. **Download Raw Data**
+4. **Consult ETCCDI Index Options**
 
-    Use the provided scripts under `src/dataloaders/` to download the raw data required for analysis.
+5. **Run Main.py**
+
+    ```bash
+    python main.py
+    ```  
 
 ## Documentation
 
