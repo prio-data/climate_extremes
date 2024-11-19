@@ -9,8 +9,6 @@ def install_packages():
     required_packages = [
         "rasterstats",   # Example: for raster operations
         "cdsapi",        # Example: for accessing Copernicus Climate Data Store API
-        "numpy",         # Example: for numerical operations
-        "pandas",        # Example: for data manipulation
         # Add any other required packages here
     ]
 
