@@ -9,11 +9,11 @@ logs/
 *.tmp
 *.bak
 
-*.csv
+
 *.zip
 *.nc
 *.tif
-
+*.csv
 # Ignore system files
 *.pyc
 .DS_Store
