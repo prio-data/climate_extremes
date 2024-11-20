@@ -108,3 +108,12 @@ print(request)
 reference_df = provide_reference_frame(request)
 
 zip_file_name = pull_from_cds_api(request)
+
+netcdf_file, etccdi_index = unzip_etccdi_package(zip_file_name)
+
+etccdi = transform_longitudinal_values(etccdi_index, netcdf_file)
+
+print('Providing Metadata for the selected climate index:')
+print()
+give_metadata(etccdi)
+
