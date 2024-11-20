@@ -76,10 +76,15 @@ def translate_index_to_daterange(etccdi, reference_df, start_year, start_month, 
 
     # For annual:
     # the etccdi dataframe will contain a month field but this is irrelevant because the temporal resolution is 1-year
+    reference_filtered_time = reference_df.loc[(reference_df['year'] >= loc_start_year) & (reference_df['year'] <= loc_end_year)]
 
     # For monthly:
     # why don't you filter for a monthly attribute?: Because all months will be included when subsetting by year.
-    reference_filtered_time = reference_df.loc[(reference_df['year'] >= loc_start_year) & (reference_df['year'] <= loc_end_year)]
+    reference_filtered_time = reference_df.loc[
+    (reference_df['year'] == loc_start_year) & (reference_df['month'] >= loc_start_month) |
+    (reference_df['year'] == loc_end_year) & (reference_df['month'] <= loc_end_month) |
+    (reference_df['year'] > loc_start_year) & (reference_df['year'] < loc_end_year)
+]
     #-----------------------------------------------------------
     print(reference_filtered_time)
     return(index_list, reference_filtered_time)
