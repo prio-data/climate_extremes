@@ -12,13 +12,13 @@ def provide_reference_frame(param_request):
 
     if temporal_aggregation_value == 'yearly':
 
-        ref_table_file = ref_table_path / 'pg__y.csv'
+        ref_table_file = ref_table_path / 'pg___y.csv'
 
         reference_df = pd.read_csv(ref_table_file)
         reference_df= reference_df.drop(columns=['Unnamed: 0'], errors='ignore')
     #-------------------------------------------------------------------
         # Convert 'year' to string
-        reference_df['year'] = reference_df['year'].astype(str)
+        #reference_df['year'] = reference_df['year'].astype(str)
     #-------------------------------------------------------------------
         print(reference_df.dtypes)
         return(reference_df)
@@ -26,16 +26,16 @@ def provide_reference_frame(param_request):
 
     else:
 
-        ref_table_file = ref_table_path / 'pg__m.csv'
+        ref_table_file = ref_table_path / 'pg___m.csv'
 
         reference_df = pd.read_csv(ref_table_file)
         reference_df = reference_df.drop(columns=['Unnamed: 0'], errors='ignore')
     #-------------------------------------------------------------------
         # Convert 'year' to string
-        reference_df['year'] = reference_df['year'].astype(str)
+        #reference_df['year'] = reference_df['year'].astype(str)
 
         # Convert 'month' to an integer first (removes decimals) and then to string
-        reference_df['month'] = reference_df['month'].astype(int).astype(str)
+        #reference_df['month'] = reference_df['month'].astype(int).astype(str)
     #-------------------------------------------------------------------
         print(reference_df.dtypes)
         return(reference_df)
