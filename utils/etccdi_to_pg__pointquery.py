@@ -1,5 +1,6 @@
 import math  # Add this import at the top of your file
 import rasterio
+from rasterio.io import MemoryFile
 import geopandas as gpd
 import pandas as pd
 import numpy as np
@@ -55,13 +56,15 @@ def generate_layout_and_save(param_time_index_list, plot_figures, output_folder,
     return output_file
 
 
-def generate_etccdi_temporal_tables__centroid(param_time_index_list, param_netcdf, param_climate_index, param_shapefile_name='pgm_viewser_extent.shp'):
+def generate_etccdi_temporal_tables__centroid(param_time_index_list, param_netcdf, param_climate_index, temporal_params ,save_raster, param_shapefile_name='pgm_viewser_extent.shp'):
     project_root = Path.cwd()  # Set this to your project root manually if needed
     extent_path = project_root / 'data' / 'processed' / 'extent_shapefile'
     extent_filename = extent_path / param_shapefile_name
     generated_index_table_folder = project_root / 'data' / 'generated' / 'index_table_output'
     
     map_folder = project_root / 'docs' / 'Graphics' / 'Standard_review'
+
+    temporal_attribution = '_'.join(temporal_params)
 
     gdf = gpd.read_file(extent_filename)
     gdf = gdf[['gid', 'geometry', 'xcoord', 'ycoord']]
@@ -93,15 +96,33 @@ def generate_etccdi_temporal_tables__centroid(param_time_index_list, param_netcd
             print("CRS is not set. Setting CRS to EPSG:4326")
             raster_data = raster_data.rio.write_crs("EPSG:4326")
 
-        temp_raster = f'temp_raster_{year}_{month}.tif'
-        raster_data.rio.to_raster(temp_raster)
+        if save_raster == 'yes':
+            temp_raster = f'temp_raster_{year}_{month}.tif'
+            raster_data.rio.to_raster(temp_raster)
+        else:
+            # Use MemoryFile for in-memory raster handling
+            with MemoryFile() as memfile:
+                with memfile.open(driver='GTiff', 
+                                width=raster_data.rio.width, 
+                                height=raster_data.rio.height, 
+                                count=1, 
+                                dtype=raster_data.dtype, 
+                                crs=raster_data.rio.crs, 
+                                transform=raster_data.rio.transform()) as dataset:
+                    dataset.write(raster_data.values, 1)
 
-        gdf['centroid'] = gdf.geometry.centroid
-        gdf[f'Point_query_result'] = point_query(
-            gdf['centroid'],
-            temp_raster,
-            interpolate='nearest'
-        )
+                # Pass the MemoryFile to the point_query function
+                gdf['centroid'] = gdf.geometry.centroid
+                gdf[f'Point_query_result'] = point_query(
+                    gdf['centroid'],
+                    memfile.name,  # Use memfile as the raster source
+                    interpolate='nearest'
+                )
+            
+            # After the MemoryFile block ends, it is automatically cleaned up
+            # We can also explicitly delete raster_data to free memory
+            del raster_data  # Clean up if no longer needed
+
         gdf = gdf.drop(columns=['centroid'])
         stats_gdf = gdf.copy()
         stats_gdf['year'] = year
@@ -122,9 +143,9 @@ def generate_etccdi_temporal_tables__centroid(param_time_index_list, param_netcd
     first_time_index = param_time_index_list[0]
     last_time_index = param_time_index_list[-1]
 
-    stats_gdf.rename(columns={'Point_query_result': param_climate_index}, inplace=True)
+    final_gdf.rename(columns={'Point_query_result': param_climate_index}, inplace=True)
 
-    file_name = f"{param_climate_index}_{first_time_index}_{last_time_index}__centroid_process.csv"
+    file_name = f"{param_climate_index}_{temporal_attribution}__centroid_process.csv"
     output_file_path = generated_index_table_folder / file_name
     final_gdf.to_csv(output_file_path, index=False)
     print(f"Final DataFrame saved to: {output_file_path}")

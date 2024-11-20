@@ -62,9 +62,9 @@ def translate_index_to_daterange(etccdi, reference_df, temporal_res, start_year,
     end_index_val, loc_end_month, loc_end_year = find_etccdi_timeindex(end_year, end_month, etccdi)
     print()
     #-----------------------------------------------------------
-    print(f'The start index is: {start_index_val}, referencing Month: {loc_start_month} and Year: {loc_start_year}')
+    print(f'The start index is: {start_index_val}, and references {loc_start_month} (month) of {loc_start_year} (year)')
     print()
-    print(f'The end index is: {end_index_val}, referencing Month: {loc_end_month} and Year: {loc_end_year}')
+    print(f'The end index is: {end_index_val}, and references {loc_end_month} (month) of {loc_end_year} (year)')
     print()
     #-----------------------------------------------------------
     index_list = list(range(start_index_val, end_index_val + 1))
@@ -79,6 +79,13 @@ def translate_index_to_daterange(etccdi, reference_df, temporal_res, start_year,
     if temporal_res == 'yearly':
         reference_filtered_time = reference_df.loc[(reference_df['year'] >= int(loc_start_year)) & (reference_df['year'] <= int(loc_end_year))]
 
+        start_yyyy = str(loc_start_year) + str(loc_start_month).zfill(2)
+
+        end_yyyy = str(loc_end_year) + str(loc_end_month).zfill(2)
+
+        report_temporal_dimensions = [temporal_res, start_yyyy, end_yyyy]
+
+
     # For monthly:
     # why don't you filter for a monthly attribute?: Because all months will be included when subsetting by year.
     else:
@@ -87,5 +94,11 @@ def translate_index_to_daterange(etccdi, reference_df, temporal_res, start_year,
         ((reference_df['year'] == int(loc_end_year)) & (reference_df['month'] <= int(loc_end_month)))
     ]
     #-----------------------------------------------------------
-    print(reference_filtered_time)
-    return(index_list, reference_filtered_time)
+        start_yyyymm = str(loc_start_year) + str(loc_start_month).zfill(2)
+
+        end_yyyymm = str(loc_end_year) + str(loc_end_month).zfill(2)
+
+        report_temporal_dimensions = [temporal_res, start_yyyymm, end_yyyymm]
+
+    #print(reference_filtered_time)
+    return(index_list, reference_filtered_time, report_temporal_dimensions)
