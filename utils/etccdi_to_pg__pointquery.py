@@ -136,8 +136,10 @@ def generate_etccdi_temporal_tables__centroid(param_time_index_list, param_netcd
         ax.set_title(f"Raster Values for {year}-{month}")
         plt.xlabel("Longitude")
         plt.ylabel("Latitude")
-        plt.show() 
+        #plt.show() 
         plot_figures.append(fig)  # Append figure to list
+        plt.close(fig)
+
 
     final_gdf = pd.concat(all_stats, ignore_index=True)
     first_time_index = param_time_index_list[0]
