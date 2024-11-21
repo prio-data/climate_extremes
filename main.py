@@ -41,7 +41,7 @@ config_file_path = f'{base_dir}/request.txt'  # Adjust this path to where your .
 config = {}
 with open(config_file_path, 'r') as file:
     for line in file:
-        key, value = line.strip().split(':')
+        key, value = line.strip().split(': ')
         config[key.strip()] = value.strip()
 
 # Assign variables from the config dictionary
