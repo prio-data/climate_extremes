@@ -13,7 +13,7 @@ def report_null_etccdi_values(etccdi_pg_file, param_reference_filtered_time, tem
     find_file_path = generated_index_table_folder / etccdi_pg_file
 
 
-    index = etccdi_pg_file.split('_')[0]
+    index = str(etccdi_pg_file).split('_')[0]
     #------------------------------------------------------------------------------------
     #load the developed Climate index 
     #------------------------------------------------------------------------------------
