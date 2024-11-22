@@ -1,4 +1,4 @@
-p_variable: cold_days
-p_product_type: base_period_1961_1990
+p_variable: summer_days
+p_product_type: base_independent
 p_experiment: ssp1_2_6
-p_temporal_aggregation: monthly
+p_temporal_aggregation: yearly

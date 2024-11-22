@@ -124,7 +124,7 @@ if method == 'raster_query':
     translated_filename = generate_etccdi_temporal_tables__centroid(index_list, etccdi, etccdi_index, report_temporal_dimensions, save_raster_decision)
 
 elif method == 'resample':
-    translated_filename = generate_etccdi_temporal_tables(index_list, etccdi, etccdi_index, save_raster_decision)
+    translated_filename = generate_etccdi_temporal_tables(index_list, etccdi, etccdi_index, report_temporal_dimensions, save_raster_decision)
 
 else: 
     print('you have entered a bad prompt for the method parameter. Please restart.... ')
