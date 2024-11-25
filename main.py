@@ -34,21 +34,89 @@ from etccdi_to_pg import generate_etccdi_temporal_tables
 from give_reference_frame import provide_reference_frame
 from id_null_values import report_null_etccdi_values
 
+# Data for the DataFrame
+data_api = {
+    "product_type": [
+        "base_independent", "base_independent", "base_independent", "base_independent",
+        "base_independent", "base_independent", "base_independent", "base_independent",
+        "base_independent", "base_independent", "base_independent", "base_independent",
+        "base_independent", "base_independent", "base_independent", "base_independent",
+        "base_independent", "base_independent", "base_independent", "base_period_1961_1990",
+        "base_period_1961_1990", "base_period_1961_1990", "base_period_1961_1990"
+    ],
+    "variable": [
+        "consecutive_dry_days", "consecutive_wet_days", "diurnal_temperature_range", "frost_days",
+        "growing_season_length", "heavy_precipitation_days", "ice_days", "maximum_1_day_precipitation",
+        "maximum_5_day_precipitation", "maximum_value_of_daily_maximum_temperature",
+        "minimum_value_of_daily_maximum_temperature", "maximum_value_of_daily_minimum_temperature",
+        "minimum_value_of_daily_minimum_temperature", "number_of_wet_days", "simple_daily_intensity_index",
+        "summer_days", "total_wet_day_precipitation", "tropical_nights", "very_heavy_precipitation_days",
+        "cold_days", "cold_nights", "warm_days", "warm_nights"
+    ],
+    "temporal_aggregation": [
+        "annual", "annual", "monthly or annual", "annual", "annual", "annual", "annual", "monthly or annual",
+        "monthly or annual", "monthly or annual", "monthly or annual", "monthly or annual", "monthly or annual",
+        "annual", "annual", "annual", "annual", "annual", "annual", "monthly or annual", "monthly or annual",
+        "monthly or annual", "monthly or annual"
+    ]
+}
 
-# Read configuration from the .txt file
-config_file_path = f'{base_dir}/request.txt'  # Adjust this path to where your .txt file is located
+# Create the DataFrame
+df_api = pd.DataFrame(data_api)
 
-config = {}
-with open(config_file_path, 'r') as file:
-    for line in file:
-        key, value = line.strip().split(': ')
-        config[key.strip()] = value.strip()
+p_temporal_aggregation = input("First, select a temporal aggregation ('yearly' \ 'monthly')")
 
-# Assign variables from the config dictionary
-p_variable = config.get('p_variable')
-p_product_type = config.get('p_product_type')
-p_experiment = config.get('p_experiment')
-p_temporal_aggregation = config.get('p_temporal_aggregation')
+
+if p_temporal_aggregation == 'monthly':
+    variable_list = df_api.loc[df_api['temporal_aggregation'].str.contains('monthly or annual'), 'variable'].tolist()
+
+    p_variable = input(f'Select indices are available at a monthly temporal resolution. Select from the following list: {variable_list}')
+    #print()
+    #print(variable_list)
+
+if p_temporal_aggregation == 'yearly':
+    
+    variable_list = df_api['variable'].tolist()
+    p_variable = input(f'all variables are available at yearly temporal resolution. Here is a list of all available climate indices: {variable_list}')
+    # print()
+    # print(variable_list)
+
+#define the product type:
+p_product_type = df_api.loc[df_api['variable'] == p_variable, 'product_type'].values[0]
+
+if p_variable in variable_list:
+    print(f"'{p_variable}' is a valid selection.")
+else:
+    raise ValueError(f"'{p_variable}' does not in the list. Please check your spelling!")
+
+p_experiment = input("Finally, select the climate experiment used to process the derived climate indices. Select from: ('historical', 'ssp1_2_6', 'ssp2_4_5', or 'ssp5_8_5')")
+
+if p_experiment == "historical" and p_temporal_aggregation == "monthly":
+    p_period = "185001_201412"
+elif p_experiment == "historical" and p_temporal_aggregation == "yearly":
+    p_period = "1850_2014"
+elif p_experiment in ["ssp1_2_6", "ssp2_4_5", "ssp5_8_5"] and p_temporal_aggregation == "monthly":
+    p_period = "201501_210012"
+elif p_experiment in ["ssp1_2_6", "ssp2_4_5", "ssp5_8_5"] and p_temporal_aggregation == "yearly":
+    p_period = "2015_2100"
+else:
+    raise ValueError(f"Invalid combination of scenario '{p_experiment}' and time '{p_temporal_aggregation}'.")
+
+
+# # Read configuration from the .txt file
+# config_file_path = f'{base_dir}/request.txt'  # Adjust this path to where your .txt file is located
+
+# config = {}
+# with open(config_file_path, 'r') as file:
+#     for line in file:
+#         key, value = line.strip().split(': ')
+#         config[key.strip()] = value.strip()
+
+# # Assign variables from the config dictionary
+# p_variable = config.get('p_variable')
+# p_product_type = config.get('p_product_type')
+# p_experiment = config.get('p_experiment')
+# p_temporal_aggregation = config.get('p_temporal_aggregation')
 
 # # Prompt the user for input
 # p_variable = input("Enter variable (e.g., 'consecutive_dry_days'): ")
