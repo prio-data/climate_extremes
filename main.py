@@ -61,36 +61,51 @@ data_api = {
     ]
 }
 
-# Create the DataFrame
+
+def safe_input(prompt):
+    user_input = input(prompt)
+    if user_input.lower() == 'quit':
+        print("Exiting the script.")
+        exit()
+    return user_input
+
+
+# Define the DataFrame
 df_api = pd.DataFrame(data_api)
 
-p_temporal_aggregation = input("First, select a temporal aggregation ('yearly' \ 'monthly')")
-
+# Get temporal aggregation
+print()
+print("You will be prompted to provide a series of parameters to generate an API request for retrieving data from the Copernicus Data Store.\n If you make a mistake or wish to exit and review the README file for more information, simply type 'quit' at any prompt.")
+print()
+p_temporal_aggregation = safe_input("First, select a temporal aggregation ('yearly' / 'monthly'): ")
 
 if p_temporal_aggregation == 'monthly':
     variable_list = df_api.loc[df_api['temporal_aggregation'].str.contains('monthly or annual'), 'variable'].tolist()
-
-    p_variable = input(f'Select indices are available at a monthly temporal resolution. Select from the following list: {variable_list}')
-    #print()
-    #print(variable_list)
-
-if p_temporal_aggregation == 'yearly':
-    
+    print()
+    p_variable = safe_input(f'Select indices are available at a monthly temporal resolution. Select from the following list ({variable_list}): ')
+    print()
+elif p_temporal_aggregation == 'yearly':
     variable_list = df_api['variable'].tolist()
-    p_variable = input(f'all variables are available at yearly temporal resolution. Here is a list of all available climate indices: {variable_list}')
-    # print()
-    # print(variable_list)
+    print()
+    p_variable = safe_input(f'All variables are available at yearly temporal resolution. Here is a list of all available climate indices  ({variable_list}): ')
+    print()
+else:
+    raise ValueError(f"Invalid temporal aggregation: '{p_temporal_aggregation}'. Please choose 'yearly' or 'monthly'.")
 
-#define the product type:
-p_product_type = df_api.loc[df_api['variable'] == p_variable, 'product_type'].values[0]
-
+# Validate the variable selection
 if p_variable in variable_list:
     print(f"'{p_variable}' is a valid selection.")
+    print()
 else:
-    raise ValueError(f"'{p_variable}' does not in the list. Please check your spelling!")
+    raise ValueError(f"'{p_variable}' is not in the list. Please check your spelling!")
 
-p_experiment = input("Finally, select the climate experiment used to process the derived climate indices. Select from: ('historical', 'ssp1_2_6', 'ssp2_4_5', or 'ssp5_8_5')")
+# Define the product type
+p_product_type = df_api.loc[df_api['variable'] == p_variable, 'product_type'].values[0]
 
+# Get experiment
+p_experiment = safe_input("Finally, select the climate experiment used to process the derived climate indices. Select from ('historical', 'ssp1_2_6', 'ssp2_4_5', or 'ssp5_8_5'): ")
+print()
+# Determine the period
 if p_experiment == "historical" and p_temporal_aggregation == "monthly":
     p_period = "185001_201412"
 elif p_experiment == "historical" and p_temporal_aggregation == "yearly":
@@ -101,7 +116,6 @@ elif p_experiment in ["ssp1_2_6", "ssp2_4_5", "ssp5_8_5"] and p_temporal_aggrega
     p_period = "2015_2100"
 else:
     raise ValueError(f"Invalid combination of scenario '{p_experiment}' and time '{p_temporal_aggregation}'.")
-
 
 # # Read configuration from the .txt file
 # config_file_path = f'{base_dir}/request.txt'  # Adjust this path to where your .txt file is located
@@ -125,21 +139,100 @@ else:
 # p_temporal_aggregation = input("Enter temporal aggregation (e.g., 'yearly'): ")
 
 # Define Start Year & Month
-start_year = input("Enter start year (e.g., '2015'): ")
-start_month = input("Enter start month (e.g., '01'): ")
+
+# Split the string by the underscore
+split_period = p_period.split('_') 
+
+# Extract the first four characters of each element and convert them to integers
+min_value = int(split_period[0][:4])  # First four characters, converted to integer
+max_value = int(split_period[1][:4])  # First four characters, converted to integer
+
+while True:
+    # Define the user input (this will be from an input prompt)
+    start_year = safe_input(f"Enter a start year between {min_value} and {max_value}: ")
+    
+    try:
+        # Convert the user input to an integer
+        start_year_int = int(start_year)
+
+        # Check if the input is within the range
+        if min_value <= start_year_int <= max_value:
+            #print(f"The input value {start_year_int} is within the range {min_value}-{max_value}.")
+            break  # Exit the loop if the input is valid
+        else:
+            print(f"The input value {start_year_int} is out of the permitted range {min_value}-{max_value}. Please try again.")
+
+    except ValueError:
+        print("Invalid input. Please enter a valid number.")
+
+
+while True:
+    # Define the user input (this will be from an input prompt)
+    start_month = safe_input(f"Enter a start month between 01 and 12, use a two digit format (ie. 02, 03): ")
+    
+    try:
+        # Convert the user input to an integer
+        start_month_int = int(start_month)
+
+        # Check if the input is within the range
+        if 1 <= start_month_int <= 12:
+            #print(f"The input value {start_month_int} is within the desired range.")
+            break  # Exit the loop if the input is valid
+        else:
+            print(f"The input value {start_month_int} is out of the permitted range 01 - 12. Please try again.")
+
+    except ValueError:
+        print("Invalid input. Please enter a valid number.")
 
 # Define End Year & Month
-end_year = input("Enter end year (e.g., '2018'): ")
-end_month = input("Enter end month (e.g., '04'): ")
 
-# Method for processing
-method = input("Enter method (raster_query / resample) ")
+while True:
 
+    # Define the user input (this will be from an input prompt)
+    end_year = safe_input(f"Enter an end year between {min_value} and {max_value}: ")
+    
+    try:
+        # Convert the user input to an integer
+        end_year_int = int(end_year)
+
+        # Check if the input is within the range
+        if min_value <= end_year_int <= max_value:
+            break  # Exit the loop if the input is valid
+        else:
+            print(f"The input value {end_year_int} is out of the permitted range {min_value}-{max_value}. Please try again.")
+
+    except ValueError:
+        print("Invalid input. Please enter a valid number.")
+
+
+while True:
+    # Define the user input (this will be from an input prompt)
+    end_month = safe_input(f"Enter start month between 01 and 12, use a two digit format (ie. 02, 03): ")
+    
+    try:
+        # Convert the user input to an integer
+        end_month_int = int(end_month)
+
+        # Check if the input is within the range
+        if 1 <= end_month_int <= 12:
+            #print(f"The input value {end_month_int} is within the desired range.")
+            break  # Exit the loop if the input is valid
+        else:
+            print(f"The input value {end_month_int} is out of the permitted range 01 - 12. Please try again.")
+
+    except ValueError:
+        print("Invalid input. Please enter a valid number.")
+
+
+print()
 # Method for processing
-save_raster_decision = input("Do you want to save each output raster file? (yes/no): ").lower()
+method = safe_input("Enter method (raster_query / resample) ")
+print()
+# Method for processing
+save_raster_decision = safe_input("Do you want to save each output raster file? (yes/no): ").lower()
 
 if save_raster_decision == 'yes':
-    raster_confirmation = input("Are you sure? Type 'YES' to confirm: ").upper()
+    raster_confirmation = safe_input("Are you sure? Type 'YES' to confirm: ").upper()
     if raster_confirmation == 'YES':
         print("You have confirmed to save the raster files.")
         # Add your code to save the raster files here
@@ -149,16 +242,7 @@ if save_raster_decision == 'yes':
 else:
     print("Raster files will not be saved.")
     save_raster_decision = 'no'
-# # Print out the values entered by the user to confirm
-# print(f"Parameters received:")
-# print(f"Variable: {p_variable}")
-# print(f"Product Type: {p_product_type}")
-# print(f"Experiment: {p_experiment}")
-# print(f"Temporal Aggregation: {p_temporal_aggregation}")
-# print(f"Start Year: {start_year}, Start Month: {start_month}")
-# print(f"End Year: {end_year}, End Month: {end_month}")
-# print(f"Method: {method}")
-# print(f'Decision to save individual raster files: {save_raster_decision}')
+
 
 request = generate_and_validate_request(
     variable=p_variable,
