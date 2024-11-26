@@ -99,10 +99,10 @@ To get started with this project, ensure that you have the following:
     ```  
 
 3. **Python Dependencies**
-    The required Python packages can be installed using the provided `install_dependencies.py` file. To install them, run:
+    The required Python packages can be installed using the provided `requirements.txt` file. To install them, run:
     
     ```bash
-    python install_dependencies.py
+    pip install -r requirements.txt
     ```  
 4. **Consult ETCCDI Index Options**
     Please reference the user guide provided by ECMWF:

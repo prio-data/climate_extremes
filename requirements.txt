@@ -1,3 +1,9 @@
 rasterstats
 cdsapi
-
+pandas
+numpy
+xarray
+rasterio
+geopandas
+matplotlib
+rioxarray
