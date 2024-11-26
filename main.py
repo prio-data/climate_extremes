@@ -258,7 +258,7 @@ print(request)
 # to the request built
 #-------------------------------------------------------------------
 
-reference_df = provide_reference_frame(request)
+#reference_df = provide_reference_frame(request)
 
 zip_file_name = pull_from_cds_api(request)
 
@@ -270,7 +270,7 @@ print('Providing Metadata for the selected climate index:')
 print()
 give_metadata(etccdi)
 
-index_list, reference_filtered_time, report_temporal_dimensions = translate_index_to_daterange(etccdi, reference_df, p_temporal_aggregation, start_year, start_month, end_year, end_month)
+index_list, reference_filtered_time, report_temporal_dimensions = translate_index_to_daterange(etccdi, p_temporal_aggregation, start_year, start_month, end_year, end_month)
 
 if method == 'raster_query':
     translated_filename = generate_etccdi_temporal_tables__centroid(index_list, etccdi, etccdi_index, report_temporal_dimensions, save_raster_decision)
