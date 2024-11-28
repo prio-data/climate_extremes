@@ -41,7 +41,7 @@ def report_null_etccdi_values(etccdi_pg_file, param_reference_filtered_time, tem
     merged_df = param_reference_filtered_time.merge(
         validate_etccdi,
         how='left',  # Keeps all rows from reference_filtered_time
-        left_on=['priogrid_gid', join_field],  # Columns in reference_filtered_time
+        left_on=['pg_id', join_field],  # Columns in reference_filtered_time
         right_on=['gid', join_field],  # Columns in validate_etccdi
         suffixes=('_reference', '_validate')  # Optional: Adds suffixes to distinguish overlapping columns
     )
