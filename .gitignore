@@ -9,6 +9,13 @@ logs/
 *.tmp
 *.bak
 
+# Ignore shapefile fiels
+*.shp
+*.dbf
+*.cpg
+*.prj
+*.shx
+#---
 
 *.zip
 *.nc

@@ -1,5 +1,7 @@
 import pandas as pd 
-from ingester3.extensions import *
+from pathlib import Path
+
+#from ingester3.extensions import *
 
 def find_etccdi_timeindex(specified_year, specified_month, ds):
     """
@@ -57,7 +59,14 @@ def find_etccdi_timeindex(specified_year, specified_month, ds):
             return(None)
         
 
-def translate_index_to_daterange(etccdi, temporal_res, start_year, start_month, end_year, end_month):
+def translate_index_to_daterange(etccdi, reference_df, temporal_res, start_year, start_month, end_year, end_month):
+
+    
+    project_root = Path(__file__).resolve().parent.parent
+
+    ref_shapefile_path = project_root / 'data' / 'processed' / 'extent_shapefile' 
+
+
     #-----------------------------------------------------------
     # Establish Start and End index values:
     start_index_val, loc_start_month, loc_start_year =  find_etccdi_timeindex(start_year, start_month, etccdi)
@@ -81,25 +90,17 @@ def translate_index_to_daterange(etccdi, temporal_res, start_year, start_month, 
     # the etccdi dataframe will contain a month field but this is irrelevant because the temporal resolution is 1-year
     if temporal_res == 'yearly':
 
-        # generate pgy scaffolding
-        reference_df = pd.DataFrame.pgy.new_structure()
-        reference_df = reference_df.rename(columns={'year_id':'year'})
-
         reference_filtered_time = reference_df.loc[(reference_df['year'] >= int(loc_start_year)) & (reference_df['year'] <= int(loc_end_year))]
         start_yyyy = str(loc_start_year) + str(loc_start_month).zfill(2)
         end_yyyy = str(loc_end_year) + str(loc_end_month).zfill(2)
 
         report_temporal_dimensions = [temporal_res, start_yyyy, end_yyyy]
 
+
     # For monthly:
     # why don't you filter for a monthly attribute?: Because all months will be included when subsetting by year.
     else:
     
-        reference_df = pd.DataFrame.pgm.new_structure()
-
-        reference_df['month'] = reference_df.m.month
-        reference_df['year'] = reference_df.m.year
-
         reference_filtered_time = reference_df.loc[
         ((reference_df['year'] == int(loc_start_year)) & (reference_df['month'] >= int(loc_start_month))) &
         ((reference_df['year'] == int(loc_end_year)) & (reference_df['month'] <= int(loc_end_month)))
@@ -110,6 +111,7 @@ def translate_index_to_daterange(etccdi, temporal_res, start_year, start_month, 
         end_yyyymm = str(loc_end_year) + str(loc_end_month).zfill(2)
 
         report_temporal_dimensions = [temporal_res, start_yyyymm, end_yyyymm]
+
 
     #print(reference_filtered_time)
     return(index_list, reference_filtered_time, report_temporal_dimensions)

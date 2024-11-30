@@ -257,9 +257,6 @@ print(request)
 # Load a clean PG dataframe at a consistent temporal resolution
 # to the request built
 #-------------------------------------------------------------------
-
-#reference_df = provide_reference_frame(request)
-
 zip_file_name = pull_from_cds_api(request)
 
 netcdf_file, etccdi_index = unzip_etccdi_package(zip_file_name)
@@ -270,7 +267,9 @@ print('Providing Metadata for the selected climate index:')
 print()
 give_metadata(etccdi)
 
-index_list, reference_filtered_time, report_temporal_dimensions = translate_index_to_daterange(etccdi, p_temporal_aggregation, start_year, start_month, end_year, end_month)
+reference_df = provide_reference_frame('yearly')
+
+index_list, reference_filtered_time, report_temporal_dimensions = translate_index_to_daterange(etccdi, reference_df, p_temporal_aggregation, start_year, start_month, end_year, end_month)
 
 if method == 'raster_query':
     translated_filename = generate_etccdi_temporal_tables__centroid(index_list, etccdi, etccdi_index, report_temporal_dimensions, save_raster_decision)
