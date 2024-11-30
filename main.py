@@ -267,7 +267,7 @@ print('Providing Metadata for the selected climate index:')
 print()
 give_metadata(etccdi)
 
-reference_df = provide_reference_frame('yearly')
+reference_df = provide_reference_frame(p_temporal_aggregation)
 
 index_list, reference_filtered_time, report_temporal_dimensions = translate_index_to_daterange(etccdi, reference_df, p_temporal_aggregation, start_year, start_month, end_year, end_month)
 
