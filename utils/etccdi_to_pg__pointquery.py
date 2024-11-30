@@ -67,7 +67,6 @@ def generate_etccdi_temporal_tables__centroid(param_time_index_list, param_netcd
     temporal_attribution = '_'.join(temporal_params)
 
     gdf = gpd.read_file(extent_filename)
-    gdf = gdf[['gid', 'geometry', 'xcoord', 'ycoord']]
 
     all_stats = []
     plot_figures = []  # Initialize list to store figures

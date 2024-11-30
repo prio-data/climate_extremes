@@ -172,7 +172,6 @@ def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_c
 
                 # Load the shapefile for zonal statistics
                 gdf = gpd.read_file(extent_filename)
-                gdf = gdf[['gid', 'geometry', 'xcoord', 'ycoord']]
 
                 # Calculate zonal statistics on the upsampled raster
                 stats = zonal_stats(gdf, memfile, stats='mean', geojson_out=True)
