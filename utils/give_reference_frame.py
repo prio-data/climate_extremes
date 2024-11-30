@@ -6,6 +6,7 @@ import pandas as pd
 from shapely.geometry import Polygon
 import os 
 
+
 # Define the function to create a 0.5x0.5 degree grid cell around a center point
 def create_grid_cell(lat, lon, cell_size=0.5):
     half_size = cell_size / 2
@@ -17,6 +18,8 @@ def create_grid_cell(lat, lon, cell_size=0.5):
         (lon - half_size, lat + half_size),  # Top-left
         (lon - half_size, lat - half_size)   # Close the polygon
     ])
+
+from ingester3.extensions import *
 
 def provide_reference_frame(temporal_aggregation_value):
 
