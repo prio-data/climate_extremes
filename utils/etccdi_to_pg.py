@@ -61,7 +61,7 @@ def generate_layout_and_save(param_time_index_list, plot_figures, output_folder,
     return output_file
 
 
-def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_climate_index, temporal_params, save_raster, param_shapefile_name='pgm_viewser_extent.shp'):
+def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_climate_index, temporal_params, save_raster, param_shapefile_name='pg_viewser_extent.shp'):
     project_root = Path.cwd()  # Set this to your project root manually if needed
 
     map_folder = project_root / 'docs' / 'Graphics' / 'Standard_review'
