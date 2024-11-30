@@ -1,3 +1,10 @@
+## Missing ADRs
+1. On resampled resolution: what is the rescale/resample factor and why was this factor decided / what considerations went into this decision?
+
+2. Is the nominal resolution consistent across all indicators? If not, the resample factor should be informed by this metadata attribute
+
+3. Provide more detailing on the raster_query process -- define (why) the product is 'grainy' and how this compares to the original geotiff resolution. 
+
 ## Decision Tree Development
 - Create a **decision tree for defensible methods** based on different applications:
     - If performing at an admin or country scale, use method X.
@@ -35,3 +42,6 @@
     - The Summary PDF.
     - Incorporate broad summary statistics into the PDF.
 2. (Optional) Incorporate an activity log tracking meaningful attributes about which processes have recently been computed and the considered parameters to aid quick reference about which variables (and respective parameters) are prepared for a batch 'ingestion.'
+
+## Notes to add to the scipt:
+1. add a print() line when building the scaffolders as this may take several minutes
