@@ -98,8 +98,7 @@ def generate_etccdi_temporal_tables__centroid(param_time_index_list, param_netcd
             raster_data = raster_data.rio.write_crs("EPSG:4326")
 
         if save_raster == 'yes':
-            temp_raster = f'out_originalraster_folder_{year}_{month}.tif'
-            temp_raster = os.path.join({out_originalraster_folder}, f'{param_climate_index}_{year}_{month}.tif')
+            temp_raster = os.path.join(out_originalraster_folder, f'{param_climate_index}_{year}_{month}.tif')
 
             raster_data.rio.to_raster(temp_raster)
             
