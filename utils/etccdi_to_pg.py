@@ -158,6 +158,7 @@ def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_c
             upsampled_raster_path = os.path.join(out_upsampleraster_folder, f"upsampled_{param_climate_index}_{year}_{month}.tif")
             upsampled_raster.rio.to_raster(upsampled_raster_path)
             print(f"Upsampled raster saved at: {upsampled_raster_path}")
+            
         else:
         # Save the resampled raster to the designated folder
             with MemoryFile() as memfile:
