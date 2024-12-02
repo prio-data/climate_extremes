@@ -102,9 +102,9 @@ def generate_etccdi_temporal_tables__centroid(param_time_index_list, param_netcd
 
             raster_data.rio.to_raster(temp_raster)
             
-        else:
+        #else:
             # Use MemoryFile for in-memory raster handling
-            with MemoryFile() as memfile:
+        with MemoryFile() as memfile:
                 with memfile.open(driver='GTiff', 
                                 width=raster_data.rio.width, 
                                 height=raster_data.rio.height, 
@@ -124,7 +124,7 @@ def generate_etccdi_temporal_tables__centroid(param_time_index_list, param_netcd
             
             # After the MemoryFile block ends, it is automatically cleaned up
             # We can also explicitly delete raster_data to free memory
-            del raster_data  # Clean up if no longer needed
+        del raster_data  # Clean up if no longer needed
 
         gdf = gdf.drop(columns=['centroid'])
         stats_gdf = gdf.copy()

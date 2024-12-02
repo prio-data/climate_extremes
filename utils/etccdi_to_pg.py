@@ -69,6 +69,7 @@ def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_c
     extent_path = project_root / 'data' / 'processed' / 'extent_shapefile'
     extent_filename = extent_path / param_shapefile_name
 
+    gdf = gpd.read_file(extent_filename)
 
     out_originalraster_folder = project_root / 'data' / 'generated' / 'index_raster_output' /'native' 
     out_upsampleraster_folder = project_root / 'data' / 'generated' / 'index_raster_output' / 'upsampled'
@@ -159,9 +160,9 @@ def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_c
             upsampled_raster.rio.to_raster(upsampled_raster_path)
             print(f"Upsampled raster saved at: {upsampled_raster_path}")
             
-        else:
+        #else:
         # Save the resampled raster to the designated folder
-            with MemoryFile() as memfile:
+        with MemoryFile() as memfile:
                 with memfile.open(driver='GTiff', 
                                 width=upsampled_raster.rio.width, 
                                 height=upsampled_raster.rio.height, 
@@ -171,11 +172,10 @@ def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_c
                                 transform=upsampled_raster.rio.transform()) as dataset:
                     dataset.write(upsampled_raster.values, 1)
 
-                # Load the shapefile for zonal statistics
-                gdf = gpd.read_file(extent_filename)
 
                 # Calculate zonal statistics on the upsampled raster
                 stats = zonal_stats(gdf, memfile, stats='mean', geojson_out=True)
+
                 stats_gdf = gpd.GeoDataFrame.from_features(stats)
 
                 # Add year and month fields
@@ -185,7 +185,7 @@ def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_c
 
                 # Ensure stats_gdf has valid geometry and data
                 stats_gdf = stats_gdf[stats_gdf.geometry.notnull() & stats_gdf[param_climate_index].notnull()]
-            del upsampled_raster  # Clean up if no longer needed
+        del upsampled_raster  # Clean up if no longer needed
 
         # Plot the zonal statistics if there is data
         if not stats_gdf.empty:
