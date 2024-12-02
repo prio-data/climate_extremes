@@ -34,7 +34,6 @@ This research project adds value by contributing a preprocessing layer that alig
 ## Repository Structure
 
 ```
-
 |-- ETCCDI_index/
     |-- README.md
     |-- LICENCE.md
@@ -104,15 +103,38 @@ To get started with this project, ensure that you have the following:
     ```bash
     pip install -r requirements.txt
     ```  
-4. **Consult ETCCDI Index Options**
+
+### Getting Started (Review before running `main.py`)
+1. **Consult ETCCDI Index Options**
     Please reference the user guide provided by ECMWF:
     https://confluence.ecmwf.int/display/CKB/Climate+extreme+indices+and+heat+stress+indicators+derived+from+CMIP6+global+climate+projections%3A+Product+User+Guide
 
-5. **Run Main.py**
+
+2. **Temporal Dimension**
+
+The code will prompt you to define the temporal range for this process. If `yearly` is selected, a monthly value must still be provided because the raw netCDF format includes a month field. Typically, for annual indices, a value of `06` is used, which acts as a placeholder for completeness but does not relate to June.
+
+
+3. **Analytic Decisions**
+
+## Decision Tree Development
+- Create a **decision tree for defensible methods** based on different applications:
+    - If performing at an admin or country scale, use method X.
+    - Address the question: "At what scale does the utility of finer-grained PRIOgrid data diminish?"
+    - Incorporate considerations of 'other' shapefile extents.
+
+
+## Run Main.py
 
     ```bash
     python main.py
     ```  
+
+## After Running the Script
+
+Migrate workflow toward **VIEWSER Data Ingestion** using the existing github repo: https://github.com/UppsalaConflictDataProgram/ingester3_loaders.git 
+
+The appropriate ingestion notebook for this process is located under the ETCCDI folder.
 
 ## Documentation
 
@@ -149,8 +171,47 @@ pip install -r requirements.txt
 a) The ETCCDI and heat stress indicators (HSI) for CMIP6 historical and future scenarios are available free of charge from the Copernicus Climate Data Store.
 b) These data are strictly for use in non-commercial research and education projects only. Scientific results based on these data must be submitted for publication in the open literature without delay.
 c) Although care has been taken in preparing and testing the data products, we cannot guarantee that the data are correct in all circumstances; neither do we accept any liability whatsoever for any error or omission in the data products, their availability, or for any loss or damage arising from their use.
-## Google Cloud Storage data links (currently for internal development)
 
-----
-### Main files
-- **Priogrid Shapefile**: [Download shp](https:// ....)
+## API Considerations
+- Maintain awareness of potential **API changes**:
+
+While running the `main.py` code, you will be prompted to make a series of selections that will construct an API 'request'. This retrieval process is programmatic, but the primary considerations are built into the `.py` file `define_request.py`. 
+
+
+Presently, the only hardcoded parameters are:
+1. the model selection `hadgem3_gc31_ll`
+    - (and corresponding ensemble member) `r1i1p1f3`
+2. Version number `2_0`
+3. Delivery format `netcdf`
+
+```
+request = {
+        "variable": [variable],
+        "product_type": [product_type],
+        "model": ["hadgem3_gc31_ll"],
+        "ensemble_member": ["r1i1p1f3"],
+        "experiment": [experiment],
+        "temporal_aggregation": [temporal_aggregation],
+        "period": [period],
+        "version": ["2_0"],
+        "data_format": "netcdf"
+    }
+```
+
+In the process of retrieving the desired dataset, the Copernicus Data Store generates an automated message: 
+
+CDS API syntax is changed and some keys or parameter names may have also changed. To avoid requests failing, please use the "Show API request code" tool on the dataset Download Form to check you are using the correct syntax for your API request.
+
+This is a caution that the request parameters may adapt, but is not an alert that some parameter is incompatible, which should result in a failed script and informative error message. Steps have been taken to mitigate the consequence of this potential hazard and keep future processing of these climate extremes data highly efficient. 
+
+the first prompt of the main.py inquires whether you want to construct the API request using the terminal prompts [y/n]. A `n` response (no) indicates you will produce a valid request, saved to the `request.txt` file. This option allows the code to continue to function with minimal adjustment or added adversity. The user will navigate to the cds store and construct an API request from within the system. This ensures a valid API call is produced irrespective of the considerations.
+
+
+If an issue is identified: 
+
+first, reconstruct API request fromt he CDS with identical parameter selection and compare the elements to accepted parameters in the `allowed_values` dataframe (located within define_request.py file). Update this function and push changes if necessary.
+
+second, investigate **CDS API forum** for transparency on updates. and     2. Contact CDS to determine their API update schedule (e.g., every 6 months or yearly).
+
+temporarily proceed with the .txt file but document the issue. 
+
