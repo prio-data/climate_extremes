@@ -71,7 +71,7 @@ def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_c
 
 
     out_originalraster_folder = project_root / 'data' / 'generated' / 'index_raster_output' /'native' 
-    out_upsampleraster_folder = project_root / 'data' / 'generated' / 'index_raster_output' / 'method' / 'upsampled'
+    out_upsampleraster_folder = project_root / 'data' / 'generated' / 'index_raster_output' / 'upsampled'
 
     generated_index_table_folder = project_root / 'data' / 'generated' / 'index_table_output'
 

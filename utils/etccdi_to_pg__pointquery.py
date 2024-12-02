@@ -64,6 +64,8 @@ def generate_etccdi_temporal_tables__centroid(param_time_index_list, param_netcd
     
     map_folder = project_root / 'docs' / 'Graphics' / 'Standard_review'
 
+    out_originalraster_folder = project_root / 'data' / 'generated' / 'index_raster_output' /'native' 
+
     temporal_attribution = '_'.join(temporal_params)
 
     gdf = gpd.read_file(extent_filename)
@@ -96,8 +98,11 @@ def generate_etccdi_temporal_tables__centroid(param_time_index_list, param_netcd
             raster_data = raster_data.rio.write_crs("EPSG:4326")
 
         if save_raster == 'yes':
-            temp_raster = f'temp_raster_{year}_{month}.tif'
+            temp_raster = f'out_originalraster_folder_{year}_{month}.tif'
+            temp_raster = os.path.join({out_originalraster_folder}, f'{param_climate_index}_{year}_{month}.tif')
+
             raster_data.rio.to_raster(temp_raster)
+            
         else:
             # Use MemoryFile for in-memory raster handling
             with MemoryFile() as memfile:
