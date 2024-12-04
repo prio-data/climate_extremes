@@ -1,4 +1,4 @@
-# ADR 5: Nominal Resolution Consistency Across Indicators
+# Nominal Resolution Consistency Across Indicators
 
 ## Context
 In the Copernicus Data Store, climate extremes data is presented with a fixed resolution determined by the model, not the indicator. This raises the question of whether the nominal resolution is consistent across all indicators.

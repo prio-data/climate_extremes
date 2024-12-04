@@ -4,13 +4,9 @@
 - Allow users to view country-specific data:
     - Avoid packaging into larger datasets.
 
-## Incorporating Accurate PRIOgrid Extent
+- pd. define process applied to output csv file
 
-    - Currently, the parameter for extent is the shapefile. Identify from Jim if 'global' will have a similar ingester 'filter' that exists for:
-        1. Continents
-        2. Regions
-    - If this will be incorporated, then this parameter should be changed to match the ingester filter parameter.
-    - However, this would still require the unit shape field, and it is not yet understood if this can be directly pulled from existing ingester code or whether a shapefile should be maintained in the repo directory for this reason.
+-  This should be appended to the doc/graphic/standard_review
 
 ## Approve Filename Structure 
 1. Approve the filename structure of:
@@ -21,5 +17,4 @@
 
 3. This needs to be an ADR!
 
-## Notes to add to the scipt:
-1. add a print() line when building the scaffolders as this may take several minutes
+

@@ -46,6 +46,7 @@ def provide_reference_frame(temporal_aggregation_value):
     print('Generating empty PG scaffolders which will be used to validate the spatial and temporal completeness of the selected indice.')
     print('This is expected to take several minutes...')
     print()
+    
     pg = pd.DataFrame.pg.new_structure()
 
     pg['lat'] = pg.pg.lat

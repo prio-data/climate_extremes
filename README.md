@@ -140,11 +140,9 @@ The appropriate ingestion notebook for this process is located under the ETCCDI 
 
 For more detailed information, refer to the following documents located in the `docs/` directory:
 
-- **ADRs**: Architectural Decision Records that document the project's key decisions.
+- **ADRs**: (Architectural Decision Records) that document the project's key decisions.
+- **EDAs**: (Exploratory Data Analysis) refer to reports that uncover important findings during data preprocessing or identify key metadata attributes. These insights are valuable as they may influence Architectural Decision Reports (ADRs) by highlighting aspects of the data that need special consideration.
 - **Glossary**: Definitions of key terms used throughout the project.
-- **Guide to Git in VS Code**: Step-by-step guide for working with Git in Visual Studio Code.
-- **Contributing Guide**: Instructions on how to contribute to the project.
-- **Code of Conduct**: Expected behavior guidelines for contributors.
 
 ## Requirements
 
