@@ -96,8 +96,9 @@ To get started with this project, ensure that you have the following:
     ```bash
     conda activate viewser
     ```  
+3. **Access the Virtual Environment**
 
-3. **Python Dependencies**
+4. **Python Dependencies**
     The required Python packages can be installed using the provided `requirements.txt` file. To install them, run:
     
     ```bash

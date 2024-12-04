@@ -1,10 +1,4 @@
 ## Statistical Context
-- Add **descriptive statistics**:
-    - Include basic summary stats for the requested indices.
-- Allow users to view country-specific data:
-    - Avoid packaging into larger datasets.
-
-- pd. define process applied to output csv file
 
 -  This should be appended to the doc/graphic/standard_review
 
