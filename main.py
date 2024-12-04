@@ -34,6 +34,9 @@ from etccdi_to_pg import generate_etccdi_temporal_tables
 from give_reference_frame import provide_reference_frame
 from id_null_values import report_null_etccdi_values
 
+# Global Statistics -----------------------------------------------------------------
+from global_summary_stats import report_summary_stats, plot_statistics
+
 # Data for the DataFrame
 data_api = {
     "product_type": [
@@ -243,7 +246,6 @@ else:
     print("Raster files will not be saved.")
     save_raster_decision = 'no'
 
-
 request = generate_and_validate_request(
     variable=p_variable,
     product_type=p_product_type,
@@ -281,3 +283,7 @@ else:
     print('you have entered a bad prompt for the method parameter. Please restart.... ')
 
 report_null_etccdi_values(translated_filename, reference_filtered_time, p_temporal_aggregation)
+
+# Generate Global Summary Stats:
+df_an, df1, df2= report_summary_stats(translated_filename)
+plot_statistics(etccdi_index, df_an, df1, df2)
