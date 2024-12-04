@@ -3,7 +3,6 @@
 
 ![Project Banner](https://pbs.twimg.com/profile_banners/1237000633896652800/1717069203/1500x500)
 
-
 ## Contact
 
 **Project Owner:**  
@@ -204,7 +203,6 @@ This is a caution that the request parameters may adapt, but is not an alert tha
 
 the first prompt of the main.py inquires whether you want to construct the API request using the terminal prompts [y/n]. A `n` response (no) indicates you will produce a valid request, saved to the `request.txt` file. This option allows the code to continue to function with minimal adjustment or added adversity. The user will navigate to the cds store and construct an API request from within the system. This ensures a valid API call is produced irrespective of the considerations.
 
-
 If an issue is identified: 
 
 first, reconstruct API request fromt he CDS with identical parameter selection and compare the elements to accepted parameters in the `allowed_values` dataframe (located within define_request.py file). Update this function and push changes if necessary.
@@ -213,3 +211,4 @@ second, investigate **CDS API forum** for transparency on updates. and     2. Co
 
 temporarily proceed with the .txt file but document the issue. 
 
+## Known shortcomings and opportunities for improving the repository are documented in `docs\TDR` (Technical Debt Registry)
