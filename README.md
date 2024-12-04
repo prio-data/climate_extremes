@@ -117,12 +117,11 @@ The code will prompt you to define the temporal range for this process. If `year
 
 3. **Analytic Decisions**
 
-## Decision Tree Development
-- Create a **decision tree for defensible methods** based on different applications:
-    - If performing at an admin or country scale, use method X.
-    - Address the question: "At what scale does the utility of finer-grained PRIOgrid data diminish?"
-    - Incorporate considerations of 'other' shapefile extents.
+#### Consult the EDA documents for primary considerations two methodological parameter selections.
 
+A TLDR is provided here: 
+
+We recommend using `resample` as the default method for processing the primary data in VIEWSER. For future applications involving model comparisons or validations, the `raster_query` method, which preserves the original resolution, is preferred.
 
 ## Run Main.py
 
