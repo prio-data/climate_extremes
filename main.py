@@ -85,12 +85,14 @@ p_temporal_aggregation = safe_input("First, select a temporal aggregation ('year
 if p_temporal_aggregation == 'monthly':
     variable_list = df_api.loc[df_api['temporal_aggregation'].str.contains('monthly or annual'), 'variable'].tolist()
     print()
-    p_variable = safe_input(f'Select indices are available at a monthly temporal resolution. Select from the following list ({variable_list}): ')
+    formatted_variable_list = "\n".join(variable_list)
+    p_variable = safe_input(f'Select indices are available at a monthly temporal resolution. Select from the following list \n{formatted_variable_list}: ')
     print()
 elif p_temporal_aggregation == 'yearly':
     variable_list = df_api['variable'].tolist()
     print()
-    p_variable = safe_input(f'All variables are available at yearly temporal resolution. Here is a list of all available climate indices  ({variable_list}): ')
+    formatted_variable_list = "\n".join(variable_list)
+    p_variable = safe_input(f'All variables are available at yearly temporal resolution. Here is a list of all available climate indices \n{formatted_variable_list}: ')
     print()
 else:
     raise ValueError(f"Invalid temporal aggregation: '{p_temporal_aggregation}'. Please choose 'yearly' or 'monthly'.")
@@ -169,62 +171,70 @@ while True:
         print("Invalid input. Please enter a valid number.")
 
 
-while True:
-    # Define the user input (this will be from an input prompt)
-    start_month = safe_input(f"Enter a start month between 01 and 12, use a two digit format (ie. 02, 03): ")
-    
-    try:
-        # Convert the user input to an integer
-        start_month_int = int(start_month)
+if p_temporal_aggregation == 'yearly':
+    start_month = '01'
+    print(f'start_month is defined as {start_month}')
 
-        # Check if the input is within the range
-        if 1 <= start_month_int <= 12:
-            #print(f"The input value {start_month_int} is within the desired range.")
-            break  # Exit the loop if the input is valid
-        else:
-            print(f"The input value {start_month_int} is out of the permitted range 01 - 12. Please try again.")
+else:
+    while True:
+            # Define the user input (this will be from an input prompt)
+        start_month = safe_input(f"Enter a start month between 01 and 12, use a two digit format (ie. 02, 03): ")
+            
+        try:
+            # Convert the user input to an integer
+            start_month_int = int(start_month)
 
-    except ValueError:
-        print("Invalid input. Please enter a valid number.")
+            # Check if the input is within the range
+            if 1 <= start_month_int <= 12:
+                #print(f"The input value {start_month_int} is within the desired range.")
+                break  # Exit the loop if the input is valid
+            else:
+                print(f"The input value {start_month_int} is out of the permitted range 01 - 12. Please try again.")
+
+        except ValueError:
+            print("Invalid input. Please enter a valid number.")
 
 # Define End Year & Month
 
 while True:
 
     # Define the user input (this will be from an input prompt)
-    end_year = safe_input(f"Enter an end year between {min_value} and {max_value}: ")
+    end_year = safe_input(f"Enter an end year between {start_year_int} and {max_value}: ")
     
     try:
         # Convert the user input to an integer
         end_year_int = int(end_year)
 
         # Check if the input is within the range
-        if min_value <= end_year_int <= max_value:
+        if start_year_int <= end_year_int <= max_value:
             break  # Exit the loop if the input is valid
         else:
-            print(f"The input value {end_year_int} is out of the permitted range {min_value}-{max_value}. Please try again.")
+            print(f"The input value {end_year_int} is out of the permitted range {start_year_int}-{max_value}. Please try again.")
 
     except ValueError:
         print("Invalid input. Please enter a valid number.")
 
+if p_temporal_aggregation == 'yearly':
+    end_month = '01'
 
-while True:
-    # Define the user input (this will be from an input prompt)
-    end_month = safe_input(f"Enter start month between 01 and 12, use a two digit format (ie. 02, 03): ")
-    
-    try:
-        # Convert the user input to an integer
-        end_month_int = int(end_month)
+else:
+    while True:
+        # Define the user input (this will be from an input prompt)
+        end_month = safe_input(f"Enter start month between 01 and 12, use a two digit format (ie. 02, 03): ")
+        
+        try:
+            # Convert the user input to an integer
+            end_month_int = int(end_month)
 
-        # Check if the input is within the range
-        if 1 <= end_month_int <= 12:
-            #print(f"The input value {end_month_int} is within the desired range.")
-            break  # Exit the loop if the input is valid
-        else:
-            print(f"The input value {end_month_int} is out of the permitted range 01 - 12. Please try again.")
+            # Check if the input is within the range
+            if 1 <= end_month_int <= 12:
+                #print(f"The input value {end_month_int} is within the desired range.")
+                break  # Exit the loop if the input is valid
+            else:
+                print(f"The input value {end_month_int} is out of the permitted range 01 - 12. Please try again.")
 
-    except ValueError:
-        print("Invalid input. Please enter a valid number.")
+        except ValueError:
+            print("Invalid input. Please enter a valid number.")
 
 
 print()
