@@ -96,10 +96,32 @@ def generate_etccdi_temporal_tables(param_time_index_list, param_netcdf, param_c
         
         # Check the data type and process accordingly
         data_type = data.dtype
+        print()
+        print(f'This data type is: {data_type}')
+        print()
+
         if data_type == 'timedelta64[ns]':
+
+            #Mask NA values
+            # data = np.ma.masked_invalid(data)  # Mask invalid values (NaT or NaN)
+
             data_days = data / np.timedelta64(1, 'D')  # Convert to days if it's timedelta
+
+            # # If the data is a MaskedArray, convert it back to a DataArray for indexing
+            # if isinstance(data_days, np.ma.MaskedArray):
+            #     data_days = xr.DataArray(data_days, dims=["time", "lat", "lon"], coords={"time": data["time"], "lat": data["lat"], "lon": data["lon"]})
+            
             raster_data = data_days.isel(time=i)
         elif data_type == 'float32':
+
+            #Mask NA values
+            # data = np.ma.masked_invalid(data)  # Mask NaN values
+
+            # If the data is a MaskedArray, convert it back to a DataArray for indexing
+            # if isinstance(data, np.ma.MaskedArray):
+            #     data = xr.DataArray(data, dims=["time", "lat", "lon"], coords={"time": data["time"], "lat": data["lat"], "lon": data["lon"]})
+            
+
             raster_data = data.isel(time=i)  # Use as-is if it's already float32
         else:
             raise TypeError(f"Unsupported data type '{data_type}' for variable '{param_climate_index}'. Expected 'timedelta64[ns]' or 'float32'.")
