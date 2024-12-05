@@ -7,15 +7,15 @@ from pathlib import Path
 
 def report_summary_stats(translated_filename):
 
-    translated_filename
+    translated_filename_str = str(translated_filename)
 
     project_root = Path.cwd()  # Set this to your project root manually if needed
     out_path = project_root / 'data' / 'generated' / 'index_table_output'
-    extent_filename = out_path / translated_filename
+    extent_filename = out_path / translated_filename_str
 
     df = pd.read_csv(extent_filename)
 
-    clim_value = translated_filename.split('_')[0]
+    clim_value = translated_filename_str.split('_')[0]
 
     df['date'] = pd.to_datetime(df[['year', 'month']].assign(day=1))  # Create a date column (set to first day of month)
     df_annual = df.groupby('year')[clim_value].agg(
