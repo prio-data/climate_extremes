@@ -11,7 +11,7 @@ Garrett Benz
 
 **Team:**  
 VIEWS Research  
-[Pvesco@prio.org](mailto:pvesco@prio.org)
+[Pvesco@prio.org](mailto:paoves@prio.org)
 
 ## VIEWS
 
