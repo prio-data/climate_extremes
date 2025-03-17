@@ -98,6 +98,8 @@ To get started with this project, ensure that you have the following:
 3. **Access the Virtual Environment**
 
 4. **Python Dependencies**
+    requires pandas 1.5.3
+    
     The required Python packages can be installed using the provided `requirements.txt` file. To install them, run:
     
     ```bash
