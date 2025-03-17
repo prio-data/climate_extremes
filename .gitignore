@@ -23,5 +23,6 @@ logs/
 *.csv
 # Ignore system files
 *.pyc
+.cdsapirc
 .DS_Store
 Thumbs.db

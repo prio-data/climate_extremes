@@ -77,7 +77,7 @@ To get started with this project, ensure that you have the following:
 
 - **Git:** Installed to clone the repository.
 - **Python Environment:** Use a virtual environment or Conda environment with the necessary packages.
-- **CDS Login Credentials:**
+- **CDS Login Credentials:** https://confluence.ecmwf.int/display/CKB/How+to+install+and+use+CDS+API+on+macOS
 - **CDS API Setup:** 
 
 ### Installation

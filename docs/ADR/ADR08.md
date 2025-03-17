@@ -1,4 +1,4 @@
-# ADR 6: Raster Query Process and Granularity
+# ADR 8: Raster Query Process and Granularity
 
 ## Context
 The raster data returned by the query process appears grainy compared to the original GeoTIFF resolution. This requires an understanding of the product's resolution and why it appears different.
