@@ -9,7 +9,9 @@ def report_summary_stats(translated_filename):
 
     translated_filename_str = str(translated_filename)
 
-    project_root = Path.cwd()  # Set this to your project root manually if needed
+    current_file_path = Path(__file__).resolve()
+    project_root = current_file_path.parent.parent
+    #project_root = Path.cwd()  # Set this to your project root manually if needed
     out_path = project_root / 'data' / 'generated' / 'index_table_output'
     extent_filename = out_path / translated_filename_str
 
@@ -131,7 +133,9 @@ def report_summary_stats(translated_filename):
 
 def plot_statistics(variable, df_annual, df1, df2):
 
-    project_root = Path.cwd()  # Set this to your project root manually if needed
+    current_file_path = Path(__file__).resolve()
+    project_root = current_file_path.parent.parent
+    #project_root = Path.cwd()  # Set this to your project root manually if needed
     output_folder = project_root / 'docs' / 'Graphics' / 'Standard_review'
 
     file_name = os.path.join(output_folder, f'{variable}_Summary_plots.pdf')

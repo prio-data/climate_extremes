@@ -69,6 +69,7 @@ def translate_index_to_daterange(etccdi, reference_df, temporal_res, start_year,
 
     #-----------------------------------------------------------
     # Establish Start and End index values:
+    print("start_year, start_month", start_year, start_month, type(start_year), type(start_month))
     start_index_val, loc_start_month, loc_start_year =  find_etccdi_timeindex(start_year, start_month, etccdi)
     print()
     end_index_val, loc_end_month, loc_end_year = find_etccdi_timeindex(end_year, end_month, etccdi)

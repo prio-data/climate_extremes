@@ -7,15 +7,15 @@ def install_packages():
     """
     # List of required packages
     required_packages = [
-        'rasterstats'
-        'cdsapi'
-        'pandas'
-        'numpy'
-        'xarray'
-        'rasterio'
-        'geopandas'
-        'matplotlib'
-        'rioxarray'       # Example: for accessing Copernicus Climate Data Store API
+        'rasterstats',
+        'cdsapi',
+        'pandas',
+        'numpy',
+        'xarray==2024.9.0',
+        'rasterio',
+        'geopandas',
+        'matplotlib',
+        'rioxarray==0.17.0'       # Example: for accessing Copernicus Climate Data Store API
         # Add any other required packages here
     ]
 
