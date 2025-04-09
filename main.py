@@ -128,16 +128,16 @@ def validate_months(temporal_aggregation, start_month, end_month):
             start_month_int = int(start_month)
             end_month_int = int(end_month)
             if not (1 <= start_month_int <= 12):
-                raise click.BadParameter(f"Start month must be between 1 and 12.")
+                raise click.BadParameter(f"Start month must be between 01 and 12.")
             
             if not (1 <= end_month_int <= 12):
-                raise click.BadParameter(f"End month must be between 1 and 12.")
+                raise click.BadParameter(f"End month must be between 01 and 12.")
             
             if start_month_int > end_month_int:
                 raise click.BadParameter("Start month must be less than or equal to end month.")
         
         except ValueError:
-            raise click.BadParameter("Month must be an integer between 1 and 12.")
+            raise click.BadParameter("Month must be a string between 01 and 12.")
     return start_month, end_month
 
 
@@ -253,6 +253,4 @@ def main(temporal_aggregation, variable, experiment, start_year, end_year, start
 
 
 if __name__ == '__main__':
-    
-    
     main()
