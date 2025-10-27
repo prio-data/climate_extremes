@@ -57,7 +57,9 @@ def generate_layout_and_save(param_time_index_list, plot_figures, output_folder,
 
 
 def generate_etccdi_temporal_tables__centroid(param_time_index_list, param_netcdf, param_climate_index, temporal_params ,save_raster, param_shapefile_name='pg_viewser_extent.shp'):
-    project_root = Path.cwd()  # Set this to your project root manually if needed
+    current_file_path = Path(__file__).resolve()
+    project_root = current_file_path.parent.parent
+    #project_root = Path.cwd()  # Set this to your project root manually if needed
     extent_path = project_root / 'data' / 'processed' / 'extent_shapefile'
     extent_filename = extent_path / param_shapefile_name
     generated_index_table_folder = project_root / 'data' / 'generated' / 'index_table_output'
